@@ -4,18 +4,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as stats
 
-# Open the serial connection (replace '/dev/ttyACM0' with your serial port)
-ser = serial.Serial('COM14', 250000)
+# Open the serial connection (replace 'COM8' with your serial port)
+ser = serial.Serial('COM8', 250000)
 
 
 # Send the start command to the microcontroller
 time.sleep(1)
-ser.write('s'.encode())
+ser.write(b's')
 time.sleep(3)
 
 # Wait for the microcontroller to send current mode and data rate
 while True:
-    if ser.inWaiting():
+    if ser.in_waiting>0:
         line = ser.readline().decode().strip()
         if line == "START":
             print("START command received!")
@@ -23,7 +23,7 @@ while True:
 
 # Wait for the microcontroller to send current mode and data rate
 while True:
-    if ser.inWaiting():
+    if ser.in_waiting>0:
         current_mode = ser.readline().decode().strip()
         print("Current mode: " + current_mode)
         data_rate = int(ser.readline().decode().strip())
@@ -42,7 +42,7 @@ time_old = time.time()
 
 try:
     while True:
-        if ser.inWaiting():
+        if ser.in_waiting>0:
             start_byte = ser.read(1)  # Read the start byte
             if start_byte == b'\xCC':  # Verify the start byte
                 high_byte = ser.read(1)  # Read the high byte
@@ -71,7 +71,7 @@ finally:
     time_array = np.arange(len(data_array)) / data_rate
 
     # Create a graph
-    plt.figure(figsize=(10, 6), dpi=500)
+    plt.figure(figsize=(4, 3), dpi=150)
     plt.plot(time_array, data_array)
     plt.title('Data graph')
     plt.xlabel('Time (s)')
@@ -88,7 +88,7 @@ finally:
     std_values = np.std(data_matrix, axis=1)
 
     # Create a new figure for the mean and standard deviation graphs
-    plt.figure(figsize=(10, 6), dpi=500)
+    plt.figure(figsize=(4, 3), dpi=150)
 
     # Create the mean graph
     plt.subplot(2, 1, 1)
@@ -122,7 +122,7 @@ finally:
     freqs = np.fft.fftfreq(len(data_array))
 
     # Plot the FFT
-    plt.figure(figsize=(10, 6), dpi=500)
+    plt.figure(figsize=(4, 3), dpi=150)
     plt.plot(freqs, fft_amplitude)
     plt.title('FFT of the data')
     plt.xlabel('Frequency (Hz)')
