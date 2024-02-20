@@ -10,20 +10,20 @@ ser = serial.Serial('COM14', 250000)
 
 # Send the start command to the microcontroller
 time.sleep(1)
-ser.write('s'.encode())
+ser.write(b's')
 time.sleep(3)
 
 # Wait for the microcontroller to send current mode and data rate
 while True:
-    if ser.inWaiting():
-        line = ser.readline().decode().strip()
+    if ser.in_waiting > 0:
+        line = ser.readline().decode('utf-8').strip()
         if line == "START":
             print("START command received!")
             break
 
 # Wait for the microcontroller to send current mode and data rate
 while True:
-    if ser.inWaiting():
+    if ser.in_waiting > 0:
         current_mode = ser.readline().decode().strip()
         print("Current mode: " + current_mode)
         data_rate = int(ser.readline().decode().strip())
@@ -42,7 +42,7 @@ time_old = time.time()
 
 try:
     while True:
-        if ser.inWaiting():
+        if ser.in_waiting > 0:
             start_byte = ser.read(1)  # Read the start byte
             if start_byte == b'\xCC':  # Verify the start byte
                 high_byte = ser.read(1)  # Read the high byte
@@ -71,8 +71,8 @@ finally:
     time_array = np.arange(len(data_array)) / data_rate
 
     # Create a graph
-    plt.figure(figsize=(10, 6), dpi=500)
-    plt.plot(time_array, data_array)
+    plt.figure(figsize=(4, 3), dpi=500)
+    plt.scatter(time_array, data_array)
     plt.title('Data graph')
     plt.xlabel('Time (s)')
     plt.ylabel('Value')
