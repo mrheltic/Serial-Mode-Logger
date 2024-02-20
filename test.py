@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 
 # Open the serial connection (replace 'COM8' with your serial port)
-ser = serial.Serial('COM8', 250000)
+ser = serial.Serial('COM14', 250000)
 
 
 # Send the start command to the microcontroller
@@ -24,9 +24,9 @@ while True:
 # Wait for the microcontroller to send current mode and data rate
 while True:
     if ser.in_waiting > 0:
-        current_mode = ser.readline().decode().strip()
+        current_mode = ser.readline().decode('utf-8').strip()
         print("Current mode: " + current_mode)
-        data_rate = int(ser.readline().decode().strip())
+        data_rate = int(ser.readline().decode('utf-8').strip())
         print("Data rate: ", data_rate)
 
         print("\nStarting data acquisition...")
@@ -72,7 +72,8 @@ finally:
 
     # Create a graph
     plt.figure(figsize=(4, 3), dpi=500)
-    plt.scatter(time_array, data_array)
+    plt.plot(time_array, data_array)
+    #plt.plot(time_array, data_array)
     plt.title('Data graph')
     plt.xlabel('Time (s)')
     plt.ylabel('Value')
