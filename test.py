@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 # Apri la connessione seriale (sostituisci '/dev/ttyACM0' con la tua porta seriale)
 ser = serial.Serial('COM14', 250000)
 
-# Aspetta che il microcontrollore mandi modalità corrente e data rate
 
 # Invia il comando di start al microcontrollore
 time.sleep(1)
@@ -15,8 +14,15 @@ time.sleep(3)
 
 # Aspetta che il microcontrollore mandi modalità corrente e data rate
 while True:
+    if ser.in_waiting > 0:
+        line = ser.readline().decode('utf-8').rstrip()
+        if line == "START":
+            print("Comando START ricevuto!")
+            break
+
+# Aspetta che il microcontrollore mandi modalità corrente e data rate
+while True:
     if ser.inWaiting():
-        received_msg = ser.readline().decode().strip()  # Legge il valore s dalla seriale (HEX) 0x73
         current_mode = ser.readline().decode().strip()
         print("Current mode: " + current_mode)
         data_rate = int(ser.readline().decode().strip())
@@ -44,8 +50,8 @@ try:
                     data_array = []  # Resetta l'array
 except KeyboardInterrupt:
     # Quando il programma viene interrotto, salva la matrice in un file di testo
-    data_matrix = data_matrix[1:]  # Rimuovi la prima riga (incompleta)
-    utils = 'Current mode: ' + current_mode + '\nData rate: ' + str(data_rate) + ' Hz\n\n'
+    data_matrix = data_matrix[1:]  # Rimuovi la prima riga (errori vari)
+    utils = 'Current mode: ' + current_mode + '\nData rate: ' + str(data_rate) + ' SPS\n\n'
     np.savetxt('data_matrix.txt', data_matrix, header=utils, fmt='%d')
     print("Dati salvati in 'data_matrix.txt'")
 finally:
