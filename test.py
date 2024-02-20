@@ -52,7 +52,7 @@ try:
 except KeyboardInterrupt:
     # When the program is interrupted, save the matrix in a text file
     data_matrix = data_matrix[1:]  # Remove the first row (various errors)
-    utils = 'Current mode: ' + current_mode + '\nData rate: ' + str(data_rate) + ' SPSw\n\n'
+    utils = 'Current mode: ' + current_mode + '\nData rate: ' + str(data_rate) + ' SPS\n\n'
     np.savetxt('data_matrix.txt', data_matrix, header=utils, fmt='%d')
     print("\n\n\n\n\nData saved in 'data_matrix.txt'")
 finally:
@@ -87,9 +87,9 @@ finally:
     # Create the mean graph
     plt.subplot(2, 1, 1)
     plt.plot(time_array[::data_rate], mean_values)
-    plt.title('Media per ogni istante')
-    plt.xlabel('Tempo (s)')
-    plt.ylabel('Media')
+    plt.title('Mean value over time')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Mean value')
 
     # Create the standard deviation graph with error bands
     plt.subplot(2, 1, 2)
@@ -98,9 +98,9 @@ finally:
                      std_values - stats.t.ppf(0.975, df=data_rate - 1) * std_values / np.sqrt(data_rate),
                      std_values + stats.t.ppf(0.975, df=data_rate - 1) * std_values / np.sqrt(data_rate), color='gray',
                      alpha=0.5)
-    plt.title('Deviazione standard per ogni istante con bande di errore')
-    plt.xlabel('Tempo (s)')
-    plt.ylabel('Deviazione standard')
+    plt.title('STD with 95% confidence interval')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Standard deviation')
 
     # Show the graphs
     plt.tight_layout()
