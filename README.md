@@ -97,3 +97,13 @@ plt.ylabel('Value')
 plt.show()
 ```
 These lines create a plot of the data and display it. The x-axis represents time in seconds, and the y-axis represents the value of the data points.
+
+# Problems
+
+```python
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0x86 in position 6: invalid start byte
+```
+
+
+> [!CAUTION]
+> This script can generate an error like this after uploading cpp code on the ESP, simply re-execute the script
