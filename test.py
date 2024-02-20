@@ -15,8 +15,8 @@ time.sleep(3)
 
 # Wait for the microcontroller to send current mode and data rate
 while True:
-    if ser.in_waiting > 0:
-        line = ser.readline().decode('utf-8').rstrip()
+    if ser.inWaiting():
+        line = ser.readline().decode().strip()
         if line == "START":
             print("START command received!")
             break
@@ -36,6 +36,9 @@ while True:
 # Initialize the matrix and array for the data
 data_matrix = []
 data_array = []
+timestamp_array = []
+
+time_old = time.time()
 
 try:
     while True:
@@ -48,7 +51,10 @@ try:
                 data_array.append(measurement)  # Add the measurement to the array
                 if len(data_array) == data_rate:  # If the array has reached the desired length
                     data_matrix.append(data_array)  # Add the array to the matrix
+                    timestamp_array.append(time.time())
                     data_array = []  # Reset the array
+                    print('Tempo impiegato:', time.time() - time_old)
+                    time_old= time.time()
 except KeyboardInterrupt:
     # When the program is interrupted, save the matrix in a text file
     data_matrix = data_matrix[1:]  # Remove the first row (various errors)
@@ -104,4 +110,21 @@ finally:
 
     # Show the graphs
     plt.tight_layout()
+    plt.show()
+
+    # Calculate the FFT of the data
+    fft_result = np.fft.fft(data_array)
+
+    # Calculate the amplitude of the FFT
+    fft_amplitude = np.abs(fft_result)
+
+    # Create the frequency array
+    freqs = np.fft.fftfreq(len(data_array))
+
+    # Plot the FFT
+    plt.figure(figsize=(10, 6), dpi=500)
+    plt.plot(freqs, fft_amplitude)
+    plt.title('FFT of the data')
+    plt.xlabel('Frequency (Hz)')
+    plt.ylabel('Amplitude')
     plt.show()
