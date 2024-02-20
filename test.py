@@ -7,7 +7,6 @@ import scipy.stats as stats
 # Open the serial connection (replace 'COM8' with your serial port)
 ser = serial.Serial('COM14', 250000)
 
-
 # Send the start command to the microcontroller
 time.sleep(1)
 ser.write(b's')
@@ -32,7 +31,6 @@ while True:
         print("\nStarting data acquisition...")
         break
 
-
 # Initialize the matrix and array for the data
 data_matrix = []
 data_array = []
@@ -53,8 +51,9 @@ try:
                     data_matrix.append(data_array)  # Add the array to the matrix
                     timestamp_array.append(time.time())
                     data_array = []  # Reset the array
-                    print('Tempo impiegato:', time.time() - time_old)
-                    time_old= time.time()
+                    new_time = time.time()
+                    print('Time:', new_time - time_old)
+                    time_old = new_time
 except KeyboardInterrupt:
     # When the program is interrupted, save the matrix in a text file
     data_matrix = data_matrix[1:]  # Remove the first row (various errors)
@@ -73,7 +72,7 @@ finally:
     # Create a graph
     plt.figure(figsize=(4, 3), dpi=500)
     plt.plot(time_array, data_array)
-    #plt.plot(time_array, data_array)
+    # plt.plot(time_array, data_array)
     plt.title('Data graph')
     plt.xlabel('Time (s)')
     plt.ylabel('Value')
