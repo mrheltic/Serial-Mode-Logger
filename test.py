@@ -2,6 +2,7 @@ import serial
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.stats as stats
 
 # Open the serial connection (replace '/dev/ttyACM0' with your serial port)
 ser = serial.Serial('COM14', 250000)
@@ -71,4 +72,36 @@ finally:
     plt.ylabel('Value')
 
     # Show the graph
+    plt.show()
+
+    # Convert the data_matrix to a numpy array for easier calculations
+    data_matrix = np.array(data_matrix)
+
+    # Calculate the mean and standard deviation for each row
+    mean_values = np.mean(data_matrix, axis=1)
+    std_values = np.std(data_matrix, axis=1)
+
+    # Create a new figure for the mean and standard deviation graphs
+    plt.figure(figsize=(10, 6), dpi=500)
+
+    # Create the mean graph
+    plt.subplot(2, 1, 1)
+    plt.plot(time_array[::data_rate], mean_values)
+    plt.title('Media per ogni istante')
+    plt.xlabel('Tempo (s)')
+    plt.ylabel('Media')
+
+    # Create the standard deviation graph with error bands
+    plt.subplot(2, 1, 2)
+    plt.plot(time_array[::data_rate], std_values)
+    plt.fill_between(time_array[::data_rate],
+                     std_values - stats.t.ppf(0.975, df=data_rate - 1) * std_values / np.sqrt(data_rate),
+                     std_values + stats.t.ppf(0.975, df=data_rate - 1) * std_values / np.sqrt(data_rate), color='gray',
+                     alpha=0.5)
+    plt.title('Deviazione standard per ogni istante con bande di errore')
+    plt.xlabel('Tempo (s)')
+    plt.ylabel('Deviazione standard')
+
+    # Show the graphs
+    plt.tight_layout()
     plt.show()
