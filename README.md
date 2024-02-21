@@ -1,6 +1,7 @@
 # Data Acquisition and Analysis Project
 
-This project is a Python script for acquiring and analyzing data from a microcontroller via a serial connection. The script collects data, performs statistical analysis, and visualizes the results.
+This project is a Python script for acquiring and analyzing 16 bit data from a microcontroller via a serial connection. The script collects
+16 bit split data sent by Serial.write() into High and Low bytes, performs statistical analysis and plot the results.
 
 ## Table of Contents
 - [Installation](#installation)
@@ -13,19 +14,19 @@ This project is a Python script for acquiring and analyzing data from a microcon
 
 ## Installation
 
-The script requires Python and several libraries. You can install these libraries using pip:
+The script requires Python and several libraries. First of all clone the repository on your IDE and install the libraries by typing the following commands on the terminal or if you're using VSCode just execute the task 'Install dependencies' by clicking the search bar then run task. In some IDE you have to install the libraries in other ways so please check the documentation.
 
 ```python
-pip install pyserial numpy matplotlib scipy
+pip install --upgrade pip | pip install pyserial | pip install numpy | pip install matplotlib | pip install scipy
 ```
 
-## Usage
+## What the script does
 
 The script opens a serial connection, sends a start command to the microcontroller, and waits for the microcontroller to send the current mode and data rate. It then starts acquiring data.
 
 Data is read from the serial connection, and measurements are added to an array. When the array reaches the desired length (defined by the data rate), it is added to a matrix, and the array is reset.
 
-If the script is interrupted (e.g., by a KeyboardInterrupt), it saves the matrix to a text file and closes the serial connection.
+If the script is interrupted (e.g. by a KeyboardInterrupt), it saves the matrix to a text file and closes the serial connection.
 
 The script then performs several analyses on the data:
 
@@ -39,9 +40,6 @@ Finally, it creates several graphs:
 - A graph of the standard deviation over time, with a 95% confidence interval.
 - A graph of the FFT of the data.
 
-## Code explanation
-
-This Python script is designed to acquire and analyze data from a microcontroller via a serial connection. The script collects data, performs statistical analysis, and visualizes the results.
 
 ### Importing Libraries
 
@@ -55,6 +53,7 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 ```
 
+## Code explanation
 ### Establishing Serial Connection
 
 The script establishes a serial connection with the microcontroller. The port and baud rate are specified in the `serial.Serial()` function:
@@ -68,7 +67,7 @@ ser = serial.Serial('COM14', 250000)
 
 ### Sending Start Command
 
-The script sends a start command (`'s'`) to the microcontroller and waits for the microcontroller to send the current mode and data rate:
+The script sends a start command in bytes (`'F'`) to the microcontroller and waits for the microcontroller to send the current mode and data rate:
 
 ```python
 time.sleep(1)
@@ -78,7 +77,7 @@ time.sleep(3)
 
 ### Receiving Data
 
-The script then enters a loop where it waits for data from the microcontroller. When data is available, it reads the data, decodes it, and checks if it has received the "START" command:
+The script then get into a loop where it waits for data from the microcontroller. When data is available, it reads the data, decodes it, and checks if it has received the "START" command:
 
 ```python
 while True:
@@ -91,7 +90,7 @@ while True:
 
 ### Data Acquisition
 
-The script then enters another loop where it waits for the microcontroller to send the current mode and data rate. It prints these values and starts the data acquisition process:
+The script get into another loop where it waits for the microcontroller to send the current mode and data rate. It prints these values and starts the data acquisition process:
 
 ```python
 while True:
@@ -107,7 +106,7 @@ while True:
 
 ### Data Collection
 
-The script initializes a matrix and an array for the data, and a timestamp array. It then enters a loop where it continuously reads data from the microcontroller. When the start byte is verified, it reads the high and low bytes, merges them into a measurement, and adds the measurement to the array. When the array reaches the desired length (defined by the data rate), it adds the array to the matrix and resets the array:
+The script initializes a matrix which it will collect the data, a single data array for each loop and a timestamp array. It then enters a loop where it continuously reads data from the microcontroller. When the start byte is verified, it reads the high and low bytes, merges them into a measurement and adds the measurement to the array. When the array reaches the desired length (defined by the data rate), it adds the array to the matrix and resets the array:
 
 ```python
 data_matrix = []
@@ -136,7 +135,7 @@ try:
 
 ### Saving Data
 
-If the script is interrupted (e.g., by a KeyboardInterrupt), it saves the matrix to a text file and closes the serial connection:
+If the script is interrupted (e.g. by a KeyboardInterrupt), it saves the matrix to a text file and closes the serial connection:
 
 ```python
 except KeyboardInterrupt:
@@ -151,7 +150,7 @@ finally:
 
 ### Data Analysis
 
-The script then performs several analyses on the data:
+The script then performs the following analyses on the data:
 
 - It calculates the mean and standard deviation for each row of the matrix.
 - It calculates the Fast Fourier Transform (FFT) of the data.
