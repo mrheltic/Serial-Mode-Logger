@@ -9,7 +9,7 @@ ser = serial.Serial('COM14', 250000)
 
 # Send the start command to the microcontroller
 time.sleep(1)
-ser.write(b's')
+ser.write(b'F')
 time.sleep(3)
 
 # Wait for the microcontroller to send current mode and data rate
