@@ -27,6 +27,10 @@ while True:
         print("Current mode: " + current_mode)
         data_rate = int(ser.readline().decode('utf-8').strip())
         print("Data rate: ", data_rate)
+        k_value = int(ser.readline().decode('utf-8').strip())
+        print("K value: ", k_value)
+        o_value = int(ser.readline().decode('utf-8').strip())
+        print("O value: ", o_value)
 
         print("\nStarting data acquisition...")
         break
@@ -56,7 +60,7 @@ try:
                     time_old = new_time
 except KeyboardInterrupt:
     # When the program is interrupted, save the matrix in a text file
-    data_matrix = data_matrix[1:]  # Remove the first row (various errors)
+    data_matrix = (k_value*data_matrix[1:])-o_value  # Remove the first row (various errors)
     utils = 'Current mode: ' + current_mode + '\nData rate: ' + str(data_rate) + ' SPS\n\n'
     np.savetxt('data_matrix.txt', data_matrix, header=utils, fmt='%d')
     print("\n\n\n\n\nData saved in 'data_matrix.txt'")
