@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 
 # Open the serial connection (replace 'COM8' with your serial port)
-ser = serial.Serial('COM14', 250000)
+ser = serial.Serial('COM8', 250000)
 
 # Send the start command to the microcontroller
 time.sleep(1)
@@ -27,10 +27,10 @@ while True:
         print("Current mode: " + current_mode)
         data_rate = int(ser.readline().decode('utf-8').strip())
         print("Data rate: ", data_rate)
-        k_value = float(ser.readline().decode('utf-8').strip())
-        print("K value: ", k_value)
-        o_value = float(ser.readline().decode('utf-8').strip())
-        print("O value: ", o_value)
+        #k_value = float(ser.readline().decode('utf-8').strip())
+       # print("K value: ", k_value)
+        #o_value = float(ser.readline().decode('utf-8').strip())
+        #print("O value: ", o_value)
 
         print("\nStarting data acquisition...")
         break
