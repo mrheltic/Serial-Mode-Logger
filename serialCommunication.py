@@ -62,7 +62,7 @@ except KeyboardInterrupt:
     # When the program is interrupted, save the matrix in a text file
     data_matrix = data_matrix[1:]  # Remove the first row (various errors)
     data_matrix = k_value * np.array(data_matrix) - o_value  # Apply the calibration
-    utils = 'Current mode: ' + current_mode + '\nData rate: ' + str(data_rate) + ' SPS\n\n'
+    utils = 'Current mode: ' + current_mode + '\nData rate: ' + str(data_rate) + ' SPS' + '\nk value: ' + str(k_value) + '\nO value: ' + str(o_value) +'\n\n'
     np.savetxt('data_matrix.txt', data_matrix, header=utils, fmt='%d')
     print("\n\n\n\n\nData saved in 'data_matrix.txt'")
 finally:
