@@ -27,10 +27,10 @@ while True:
         print("Current mode: " + current_mode)
         data_rate = int(ser.readline().decode('utf-8').strip())
         print("Data rate: ", data_rate)
-        #k_value = float(ser.readline().decode('utf-8').strip())
-       # print("K value: ", k_value)
-        #o_value = float(ser.readline().decode('utf-8').strip())
-        #print("O value: ", o_value)
+        k_value = float(ser.readline().decode('utf-8').strip())
+        print("K value: ", k_value)
+        o_value = float(ser.readline().decode('utf-8').strip())
+        print("O value: ", o_value)
 
         print("\nStarting data acquisition...")
         break
