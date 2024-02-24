@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as stats
 from collections import deque 
+from matplotlib.animation import FuncAnimation 
 
 
 
@@ -62,6 +63,8 @@ line, = ax.plot([])
 
 #set the grid
 plt.grid()
+
+scatter=ax.scatter([], [])
 
 #set the maximum number of data points to be shown
 data_points = deque(maxlen=data_rate) 
@@ -129,19 +132,19 @@ for i in range(1, len(timestamp)):
 
         #list of tuples
         data_points.append((new_x, new_y)) 
-        print(data_points[-1])
         
         # Update the plot with the new data points 
         x_values = [x for x, y in data_points] 
         y_values = [y for x, y in data_points] 
+        scatter.set_offsets(list(zip(x_values, y_values))) 
         line.set_data(x_values, y_values) 
 
         #pause the plot for a short time
-        plt.pause(0.1) 
+        plt.pause(0.01) 
   
 
 #clear   
-line.set_data([], [])
+#line.set_data([], [])
 
 #show the plot
 plt.show() 
