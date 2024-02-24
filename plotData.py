@@ -5,24 +5,28 @@ import scipy.stats as stats
 from collections import deque 
 
 
+
 #export the current mode
 currentmode=np.loadtxt('dataStorage.txt', dtype='str', max_rows=1)[-1]
 
-#export the data rate
-data_rate=int(np.loadtxt('dataStorage.txt', dtype='int', usecols=(2), skiprows=1,max_rows=1))
-
 #export the k value
-k_value=float(np.loadtxt('dataStorage.txt', dtype='float', usecols=(2), skiprows=2,max_rows=1))
+k_value=float(np.loadtxt('dataStorage.txt', dtype='float', usecols=(1), skiprows=1,max_rows=1))
 
 #export the offset
-offset=np.loadtxt('dataStorage.txt', dtype='float', usecols=(2), skiprows=3, max_rows=1) 
+offset=np.loadtxt('dataStorage.txt', dtype='float', usecols=(1), skiprows=2, max_rows=1) 
+
+#export the data rate
+data_rate=int(np.loadtxt('dataStorage.txt', dtype='int', usecols=(4), skiprows=3, max_rows=1))
+
+#export the conversion factor
+factor=np.loadtxt('dataStorage.txt', dtype='float', usecols=(1), skiprows=4, max_rows=1) 
 
 #export the timestamp
-timestamp = np.loadtxt('dataStorage.txt', dtype='str', usecols=(0), skiprows=4) 
+timestamp = np.loadtxt('dataStorage.txt', dtype='str', usecols=(0), skiprows=6) 
 
+#export the data matrix without the 1st array for a problem
+data_matrix = np.loadtxt('dataStorage.txt', dtype='int', skiprows=6, usecols=np.arange(1, data_rate+1),max_rows=len(timestamp)-1)
 
-#export the data matrix
-data_matrix = np.loadtxt('dataStorage.txt', dtype='int', skiprows=4, usecols=np.arange(1, data_rate+1),max_rows=len(timestamp)-1)
 
 #create a 1D array from the matrix
 data_array = np.concatenate(data_matrix) 
@@ -33,23 +37,56 @@ mean_values = np.zeros(data_matrix.shape[0])
 #declaration of the standard deviation values array
 std_values = np.zeros(data_matrix.shape[0]) 
 
+
+#declaration of the maximum value for adjusting the y axis
+max=0
+
 # Calculate the mean and standard deviation for each row
-for i in range(0, data_matrix.shape[0]):
+for i in range(1, data_matrix.shape[0]):
     mean_values[i] = np.mean(data_matrix[i,:])
     std_values[i]= np.std(data_matrix[i,:])
 
-"""
+
 #declarations for the dynamic plot
 fig, ax = plt.subplots() 
 line, = ax.plot([]) 
 
+#set the grid
+plt.grid()
+
 #set the maximum number of data points to be shown
 data_points = deque(maxlen=data_rate) 
 
-#set the limits of the y axis
-ax.set_ylim(0, 9000) 
+#conversion
+if currentmode=="Voltage":
+    gain=k_value*factor
+    data_matrix = np.dot(data_matrix,gain)-offset
 
+     #find the maximum value in the dataset
+    for i in range(1, data_matrix.shape[0]):
+        temp= np.max(data_matrix[i,:])
+        if(temp>max):
+            max=temp
+    
+    #set the limits of the y axis
+    ax.set_ylim(0, max + 0.3 ) 
 
+else: 
+    if currentmode=="Current":
+        gain=k_value*factor
+        data_matrix = np.dot(data_matrix,gain)-offset
+
+         #find the maximum value in the dataset
+        for i in range(1, data_matrix.shape[0]):
+            temp= np.max(data_matrix[i,:])
+            if(temp>max):
+                max=temp
+        #set the limits of the y axis
+        ax.set_ylim(-max- 0.3, max + 0.3 ) 
+        
+    #num=factor*3.3
+    #den = np.dot(data_matrix,k_value)
+    #num/(x )
 
 #for each row except the last one
 for i in range(1, len(timestamp)):
@@ -94,10 +131,9 @@ for i in range(1, len(timestamp)):
 #clear   
 line.set_data([], [])
 
-#show all
-plt.grid()
+#show the plot
 plt.show() 
-"""
+
 
 # Create the mean graphs
 plt.figure(figsize=(10, 5), dpi=100)
@@ -105,8 +141,6 @@ plt.plot(timestamp[:(len(timestamp)-1)], mean_values)
 plt.title('Mean value over time')
 plt.xlabel('Time (s)')
 plt.ylabel('Mean value')
-plt.grid()
-plt.show()
 
 
 #Create the standard deviation graph with error bands
@@ -126,7 +160,6 @@ plt.ylabel('Standard deviation')
 # Show the graphs
 plt.tight_layout()
 plt.grid()
-
 plt.show()
 
 
@@ -145,4 +178,5 @@ plt.plot(freqs, fft_amplitude)
 plt.title('FFT of the data')
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('Amplitude')
+plt.grid()
 plt.show()
