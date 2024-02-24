@@ -86,10 +86,19 @@ else:
                 max=temp
         #set the limits of the y axis
         ax.set_ylim(-max- 0.3, max + 0.3 ) 
+    if currentmode=="Resistance":
+        num=factor*3.3
+        den = np.dot(data_matrix,k_value)
+        data_matrix= num/den-offset
         
-    #num=factor*3.3
-    #den = np.dot(data_matrix,k_value)
-    #num/(x )
+         #find the maximum value in the dataset
+        for i in range(1, data_matrix.shape[0]):
+            temp= np.max(data_matrix[i,:])
+            if(temp>max):
+                max=temp
+        #set the limits of the y axis
+        ax.set_ylim(0, max + 0.3 )    
+    
 
 #for each row except the last one
 for i in range(1, len(timestamp)):
