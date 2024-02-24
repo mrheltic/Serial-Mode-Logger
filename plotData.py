@@ -24,10 +24,19 @@ factor=np.loadtxt('dataStorage.txt', dtype='float', usecols=(1), skiprows=4, max
 #export the timestamp
 timestamp = np.loadtxt('dataStorage.txt', dtype='str', usecols=(0), skiprows=6) 
 
-#export the data matrix without the 1st array for a problem
-data_matrix = np.loadtxt('dataStorage.txt', dtype='int', skiprows=6, usecols=np.arange(1, data_rate+1),max_rows=len(timestamp)-1)
+#export the dataset(reversed) without the 1st array for a problem
+reverse = np.loadtxt('dataStorage.txt', dtype='int', skiprows=6, usecols=np.arange(1, data_rate+1),max_rows=len(timestamp)-1)
 
+#declaration of the data matrix
+data_matrix=np.zeros((len(timestamp)-1, data_rate))
 
+#reverse the data matrix
+for i in range(0, len(timestamp)-1):
+        k=0
+        for j in range(data_rate-1, -1, -1):
+            data_matrix[i,k]=reverse[i,j]
+            k=k+1
+        
 #create a 1D array from the matrix
 data_array = np.concatenate(data_matrix) 
 
@@ -112,13 +121,16 @@ for i in range(1, len(timestamp)):
 
         # add every single value in the timeline to new_x
         new_x = timeline[j]
+        
 
         # add the corresponding value to new_y
         new_y = data_matrix[i-1,j]
+        
 
         #list of tuples
         data_points.append((new_x, new_y)) 
-  
+        print(data_points[-1])
+        
         # Update the plot with the new data points 
         x_values = [x for x, y in data_points] 
         y_values = [y for x, y in data_points] 
