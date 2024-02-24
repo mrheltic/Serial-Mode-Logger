@@ -87,7 +87,8 @@ for i in range(1, len(timestamp)):
         plt.pause(0.0001) 
   
 
-#create a fake timestamp for the last plot with delta time of 1 second
+##create a fake timestamp for the last plot with delta time of 1 second        
+# ~Start Last plot        
 faketimestamp=timedelta(seconds=1)
 finaltimestamp=datetime.strptime(timestamp[-1], '%H:%M:%S')
 finaltimeline=np.arange(finaltimestamp, finaltimestamp + faketimestamp, faketimestamp/data_rate)
@@ -116,67 +117,17 @@ for j in range(0, data_rate):
     #pause the plot for a short time
     plt.pause(0.0001) 
 
-#clear the plot        
+
+# ~End
+    
+#clear   
 line.set_data([], [])
 
-#plot
+#show all
 plt.grid()
 plt.show() 
 
 
-
-"""""
-    #plot the data
-    plt.figure(figsize=(10, 5), dpi=100)
-    plt.plot(timeline, data_matrix[i,:])
-    plt.title('Data graph')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Value')
-    plt.grid()
-    plt.show()
-"""
-
-
-
-
-"""""
-for j in range(0, data_rate): 
-
-        # add every single value in the timeline to new_x
-        new_x = timeline[j]
-
-        # add the corresponding value to new_y
-        new_y = data_matrix[-1,j]
-
-        #list of tuples
-        data_points.append((new_x, new_y)) 
-  
-        # Update the plot with the new data points 
-        x_values = [x for x, y in data_points] 
-        y_values = [y for x, y in data_points] 
-        line.set_data(x_values, y_values) 
-
-        #pause the plot for a short time
-        plt.pause(0.0001) 
-  
-     
-#clear the plot        
-line.set_data([], [])
-
-
-plt.grid()
-plt.show() 
-
-
-plt.figure(figsize=(10, 5), dpi=100)
-plt.plot(timeline, data_matrix[-1,:])
-plt.title('Data graph')
-plt.xlabel('Time (s)')
-plt.ylabel('Value')
-plt.grid()
-plt.show()
-
-"""""
 # Create the mean graphs
 plt.figure(figsize=(10, 5), dpi=100)
 plt.plot(timestamp, mean_values)
