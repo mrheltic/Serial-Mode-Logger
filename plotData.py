@@ -26,18 +26,8 @@ factor=np.loadtxt('dataStorage.txt', dtype='float', usecols=(1), skiprows=4, max
 timestamp = np.loadtxt('dataStorage.txt', dtype='str', usecols=(0), skiprows=6) 
 
 #export the dataset(reversed) without the 1st array for a problem
-reverse = np.loadtxt('dataStorage.txt', dtype='int', skiprows=6, usecols=np.arange(1, data_rate+1),max_rows=len(timestamp)-1)
+data_matrix = np.loadtxt('dataStorage.txt', dtype='int', skiprows=6, usecols=np.arange(1, data_rate+1),max_rows=len(timestamp)-1)
 
-#declaration of the data matrix
-data_matrix=np.zeros((len(timestamp)-1, data_rate))
-
-#reverse the data matrix
-for i in range(0, len(timestamp)-1):
-        k=0
-        for j in range(data_rate-1, -1, -1):
-            data_matrix[i,k]=reverse[i,j]
-            k=k+1
-        
 #create a 1D array from the matrix
 data_array = np.concatenate(data_matrix) 
 
@@ -64,6 +54,7 @@ line, = ax.plot([])
 #set the grid
 plt.grid()
 
+#comment the following line to use the plot with interpolation
 scatter=ax.scatter([], [])
 
 #set the maximum number of data points to be shown
@@ -136,15 +127,19 @@ for i in range(1, len(timestamp)):
         # Update the plot with the new data points 
         x_values = [x for x, y in data_points] 
         y_values = [y for x, y in data_points] 
+
+        #comment the following line to use the plot with interpolation
         scatter.set_offsets(list(zip(x_values, y_values))) 
+
         line.set_data(x_values, y_values) 
 
-        #pause the plot for a short time
-        plt.pause(0.01) 
+        #change the following parameter to adjust the speed of the plot
+        plt.pause(0.0001) 
   
 
-#clear   
-#line.set_data([], [])
+
+#decomment the following lines to clear the plot with interpolation 
+#line.set_data([], [])          #clear  
 
 #show the plot
 plt.show() 
