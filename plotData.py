@@ -86,11 +86,12 @@ else:
                 max=temp
         #set the limits of the y axis
         ax.set_ylim(-max- 0.3, max + 0.3 ) 
+        
     if currentmode=="Resistance":
         num=factor*3.3
         den = np.dot(data_matrix,k_value)
         data_matrix= num/den-offset
-        
+
          #find the maximum value in the dataset
         for i in range(1, data_matrix.shape[0]):
             temp= np.max(data_matrix[i,:])
@@ -108,8 +109,15 @@ for i in range(1, len(timestamp)):
     timestamp1=datetime.strptime(timestamp[i-1], '%H:%M:%S')
     diff=timestamp2-timestamp1
 
+    """
+    the second timestamp refers to the start of the first measure of the array so I substract, from the  
+    difference, the fraction of time corresponding to the time needed to acquire a single sample.
+    this is an approximation, but it is good enough for the purpose of the plot
+    """
+    diff=diff-diff/data_rate
+
     #create a timeline from a timestamp to another
-    timeline=np.arange(timestamp1, timestamp1 + diff , diff/data_rate)
+    timeline=np.arange(timestamp1, (timestamp2-diff/data_rate), diff/data_rate)
     
     #just to be sure that the timeline has the right shape for the plot
     if(timeline.shape>(data_rate,)):
@@ -119,12 +127,13 @@ for i in range(1, len(timestamp)):
     #set the limits of the x axis
     ax.set_xlim(timestamp1, timestamp2) 
     
+    
     #for each data point in the row
     for j in range(0, data_rate): 
 
         # add every single value in the timeline to new_x
         new_x = timeline[j]
-        
+       
 
         # add the corresponding value to new_y
         new_y = data_matrix[i-1,j]
@@ -132,6 +141,7 @@ for i in range(1, len(timestamp)):
 
         #list of tuples
         data_points.append((new_x, new_y)) 
+        
         
         # Update the plot with the new data points 
         x_values = [x for x, y in data_points] 
@@ -143,8 +153,8 @@ for i in range(1, len(timestamp)):
         line.set_data(x_values, y_values) 
 
         #change the following parameter to adjust the speed of the plot
-        plt.pause(0.0001) 
-  
+        plt.pause(0.0000001) 
+    
 
 
 #decomment the following lines to clear the plot with interpolation 
