@@ -38,9 +38,6 @@ mean_values = np.zeros(data_matrix.shape[0])
 std_values = np.zeros(data_matrix.shape[0]) 
 
 
-#declaration of the maximum value for adjusting the y axis
-max=0
-
 # Calculate the mean and standard deviation for each row
 for i in range(1, data_matrix.shape[0]):
     mean_values[i] = np.mean(data_matrix[i,:])
@@ -60,16 +57,22 @@ scatter=ax.scatter([], [])
 #set the maximum number of data points to be shown
 data_points = deque(maxlen=data_rate) 
 
+#function to find the maximum value in the dataset
+def max_value(data_matrix):
+    max=0
+    for i in range(1, data_matrix.shape[0]):
+        temp= np.max(data_matrix[i,:])
+        if(temp>max):
+            max=temp
+    return max
+
 #conversion
 if currentmode=="Voltage":
     gain=k_value*factor
     data_matrix = np.dot(data_matrix,gain)-offset
 
-     #find the maximum value in the dataset
-    for i in range(1, data_matrix.shape[0]):
-        temp= np.max(data_matrix[i,:])
-        if(temp>max):
-            max=temp
+    #call the function to find the maximum value in the dataset
+    max=max_value(data_matrix)
     
     #set the limits of the y axis
     ax.set_ylim(0, max + 0.3 ) 
@@ -79,11 +82,9 @@ else:
         gain=k_value*factor
         data_matrix = np.dot(data_matrix,gain)-offset
 
-         #find the maximum value in the dataset
-        for i in range(1, data_matrix.shape[0]):
-            temp= np.max(data_matrix[i,:])
-            if(temp>max):
-                max=temp
+        #call the function to find the maximum value in the dataset
+        max=max_value(data_matrix)
+
         #set the limits of the y axis
         ax.set_ylim(-max- 0.3, max + 0.3 ) 
         
@@ -92,11 +93,9 @@ else:
         den = np.dot(data_matrix,k_value)
         data_matrix= num/den-offset
 
-         #find the maximum value in the dataset
-        for i in range(1, data_matrix.shape[0]):
-            temp= np.max(data_matrix[i,:])
-            if(temp>max):
-                max=temp
+        #call the function to find the maximum value in the dataset
+        max=max_value(data_matrix)
+
         #set the limits of the y axis
         ax.set_ylim(0, max + 0.3 )    
     
@@ -157,7 +156,7 @@ for i in range(1, len(timestamp)):
     
 
 
-#decomment the following lines to clear the plot with interpolation 
+#uncomment the following lines to clear the plot with interpolation 
 #line.set_data([], [])          #clear  
 
 #show the plot
