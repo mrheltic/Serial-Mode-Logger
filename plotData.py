@@ -199,7 +199,7 @@ fft_result = np.fft.fft(data_array)
 fft_amplitude = np.abs(fft_result)
 
 # Create the frequency array
-freqs = np.fft.fftfreq(len(data_array))
+freqs = np.fft.fftfreq(data_array.size, 1/data_rate)
 
 # Plot the FFT
 plt.figure(figsize=(4, 3), dpi=150)
