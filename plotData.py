@@ -117,7 +117,7 @@ for i in range(1, len(timestamp)):
     diff=diff-diff/data_rate
 
     #create a timeline from a timestamp to another
-    timeline=np.arange(timestamp1, (timestamp2-diff/data_rate), diff/data_rate)
+    timeline=np.arange(timestamp1, timestamp1+diff, diff/data_rate)
     
     #just to be sure that the timeline has the right shape for the plot
     if(timeline.shape>(data_rate,)):
