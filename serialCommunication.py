@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 
 # Open the serial connection (replace 'COM8' with your serial port)
-ser = serial.Serial('COM8', 250000)
+ser = serial.Serial('COM13', 250000)
 
 # Send the start command to the microcontroller
 time.sleep(1)
@@ -75,12 +75,17 @@ except KeyboardInterrupt:
             den = np.dot(data_matrix,k_value)
             data_matrix= num/den-offset
 
+    print(data_matrix)
+    print(timestamp_array)
+
     timestamp_array = str(timestamp_array)
+
     strdata_matrix = str(data_matrix)
-    utils = "Current measure: " + current_mode + "\n" + "Gain: " + k_value + "\n" + "Offset: " + offset + "\n" + "Array length (Sample rate): " + data_rate + "\n" +"Conversion factor: " + factor + "\n"
+    print(strdata_matrix)
+    utils = "Current measure: " + str(current_mode) + "\n" + "Gain: " + str(k_value) + "\n" + "Offset: " + str(offset) + "\n" + "Array length (Sample rate): " + str(data_rate) + "\n" +"Conversion factor: " + str(factor) + "\n"
     datasave = np.column_stack((timestamp_array, strdata_matrix))
 
-    np.savetxt('data_matrix.txt', data_matrix, header=utils, fmt='%d')
+    np.savetxt('data_matrix.txt', datasave, header=utils, fmt='%s')
     print("\n\n\n\n\nData saved in 'data_matrix.txt'")
 
 finally:
