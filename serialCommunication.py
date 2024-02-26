@@ -25,12 +25,14 @@ while True:
     if ser.in_waiting > 0:
         current_mode = ser.readline().decode('utf-8').strip()
         print("Current mode: " + current_mode)
-        data_rate = int(ser.readline().decode('utf-8').strip())
-        print("Data rate: ", data_rate)
         k_value = float(ser.readline().decode('utf-8').strip())
         print("K value: ", k_value)
-        o_value = float(ser.readline().decode('utf-8').strip())
-        print("O value: ", o_value)
+        offset = float(ser.readline().decode('utf-8').strip())
+        print("O value: ", offset)
+        data_rate = int(ser.readline().decode('utf-8').strip())
+        print("Data rate: ", data_rate)
+        factor= float(ser.readline().decode('utf-8').strip())
+        print("Conversion factor: ", factor)
 
         print("\nStarting data acquisition...")
         break
@@ -40,7 +42,7 @@ data_matrix = []
 data_array = []
 timestamp_array = []
 
-time_old = time.time()
+time_old = time.time()  #da testare se va bene questa posizione nel codice per la prima misura di time old
 
 try:
     while True:
@@ -54,17 +56,31 @@ try:
                 if len(data_array) == data_rate:  # If the array has reached the desired length
                     data_matrix.append(data_array)  # Add the array to the matrix
                     timestamp_array.append(time.time())
-                    data_array = []  # Reset the array
                     new_time = time.time()
-                    print('Time:', new_time - time_old)
                     time_old = new_time
+                    data_array = []  # Reset the array
+                    print('Time:', new_time - time_old)
+                   
 except KeyboardInterrupt:
     # When the program is interrupted, save the matrix in a text file
     data_matrix = data_matrix[1:]  # Remove the first row (various errors)
-    data_matrix = k_value * np.array(data_matrix) - o_value  # Apply the calibration
-    utils = 'Current mode: ' + current_mode + '\nData rate: ' + str(data_rate) + ' SPS' + '\nk value: ' + str(k_value) + '\nO value: ' + str(o_value) +'\n\n'
+
+    #calibration
+    if current_mode == "Voltage" or current_mode == "Current":
+        gain=k_value*factor
+        data_matrix = np.dot(data_matrix,gain)-offset
+    else:
+         if current_mode == "Resistance":
+            num=factor*3.3
+            den = np.dot(data_matrix,k_value)
+            data_matrix= num/den-offset
+
+    utils = "Current measure: " + current_mode + "\n" + "Gain: " + k_value + "\n" + "Offset: " + offset + "\n" + "Array length (Sample rate): " + data_rate + "\n" +"Conversion factor: " + factor + "\n"
+    datasave = np.column_stack((timestamp_array, data_matrix))
+    
     np.savetxt('data_matrix.txt', data_matrix, header=utils, fmt='%d')
     print("\n\n\n\n\nData saved in 'data_matrix.txt'")
+
 finally:
     ser.close()  # Close the serial connection
 
@@ -124,7 +140,7 @@ finally:
     fft_amplitude = np.abs(fft_result)
 
     # Create the frequency array
-    freqs = np.fft.fftfreq(len(data_array))
+    freqs = np.fft.fftfreq(data_array.size, 1/data_rate)
 
     # Plot the FFT
     plt.figure(figsize=(4, 3), dpi=150)
