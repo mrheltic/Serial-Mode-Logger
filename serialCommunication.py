@@ -33,7 +33,7 @@ while True:
         print("Data rate: ", data_rate)
         factor= float(ser.readline().decode('utf-8').strip())
         print("Conversion factor: ", factor)
-
+ 
         print("\nStarting data acquisition...")
         break
 
@@ -56,10 +56,10 @@ try:
                 if len(data_array) == data_rate:  # If the array has reached the desired length
                     data_matrix.append(data_array)  # Add the array to the matrix
                     timestamp_array.append(time.time())
-                    new_time = time.time()
-                    time_old = new_time
                     data_array = []  # Reset the array
+                    new_time = time.time()
                     print('Time:', new_time - time_old)
+                    time_old = new_time
                    
 except KeyboardInterrupt:
     # When the program is interrupted, save the matrix in a text file
@@ -75,9 +75,11 @@ except KeyboardInterrupt:
             den = np.dot(data_matrix,k_value)
             data_matrix= num/den-offset
 
+    timestamp_array = str(timestamp_array)
+    strdata_matrix = str(data_matrix)
     utils = "Current measure: " + current_mode + "\n" + "Gain: " + k_value + "\n" + "Offset: " + offset + "\n" + "Array length (Sample rate): " + data_rate + "\n" +"Conversion factor: " + factor + "\n"
-    datasave = np.column_stack((timestamp_array, data_matrix))
-    
+    datasave = np.column_stack((timestamp_array, strdata_matrix))
+
     np.savetxt('data_matrix.txt', data_matrix, header=utils, fmt='%d')
     print("\n\n\n\n\nData saved in 'data_matrix.txt'")
 
