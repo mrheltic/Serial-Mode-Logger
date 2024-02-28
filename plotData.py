@@ -4,6 +4,17 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 from collections import deque 
 from matplotlib.animation import FuncAnimation 
+from matplotlib.backends.backend_tkagg import (
+     FigureCanvasTkAgg)
+import tkinter as tk
+
+
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (
+    FigureCanvasTkAgg,
+    NavigationToolbar2Tk
+)
+
 
 
 
@@ -37,19 +48,20 @@ mean_values = np.zeros(data_matrix.shape[0])
 #declaration of the standard deviation values array
 std_values = np.zeros(data_matrix.shape[0]) 
 
-
 # Calculate the mean and standard deviation for each row
 for i in range(1, data_matrix.shape[0]):
     mean_values[i] = np.mean(data_matrix[i,:])
     std_values[i]= np.std(data_matrix[i,:])
 
-
 #declarations for the dynamic plot
 fig, ax = plt.subplots() 
 line, = ax.plot([]) 
 
+#declarations for meanPlot 
+#fig2, ax2 = plt.subplots()
+
 #set the grid
-plt.grid()
+#plt.grid()
 
 #comment the following line to use the plot with interpolation
 scatter=ax.scatter([], [])
@@ -100,6 +112,135 @@ else:
         ax.set_ylim(0, max + 0.3 )    
     
 
+import customtkinter
+
+customtkinter.set_appearance_mode("System")  # Modes: system (default), light, dark
+customtkinter.set_default_color_theme("blue")
+
+root = customtkinter.CTk()  # create CTk window like you do with the Tk window
+root.geometry("1280x720")
+root.resizable(False, False)
+root.title("Logger project Interface")
+
+
+
+graphframe = customtkinter.CTkFrame(master=root)
+graphframe.pack(pady=20, padx=60, fill="both", expand=False)
+
+
+#root = tk.Tk()
+#root.geometry("1366x768")
+#root.resizable(False, False)
+#root.title("Logger project Interface")
+
+def MeanOverTime():
+    
+    # Tkinter Application
+    #meanframe = customtkinter.CTkFrame(master=root)
+    #meanframe.pack(pady=20, padx=50, fill="both", expand=False)
+    
+    #meanframe = tk.Frame(root)
+    #meanframe.pack()
+    
+    fig2=Figure(figsize=(10, 5), dpi=100)
+
+
+
+    
+    # Create the mean graphs
+    ax2 = fig2.add_subplot()
+    ax2.plot(timestamp[:(len(timestamp)-1)], mean_values)
+    ax2.set_xlabel("Timestamp [s]")
+    ax2.set_ylabel("Mean(t)")
+
+    # Create Canvas
+    meanfigure = FigureCanvasTkAgg(fig2, master=graphframe)  
+    meanfigure.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=0)
+
+    meanfigure.draw()
+    #fig2.clf()
+    
+    
+
+
+   # Std_Button = customtkinter.CTkButton(master=root, text="Calculate Standard Deviation Over time", command=StandardDeviationGraph)
+    #Std_Button.place(relx=0.3, rely=0.8, anchor=customtkinter.E)
+
+    #plt.title('Mean value over time')
+    #plt.xlabel('Time (s)')
+    #plt.ylabel('Mean value')
+    
+    
+
+def StandardDeviationGraph():
+    
+
+    # Tkinter Application
+    
+    #stdframe = tk.Frame(root)
+    #stdframe.pack()
+ 
+    
+    # Create the mean graphs
+    fig3=Figure(figsize=(10, 5), dpi=100)
+    ax2 = fig3.add_subplot()
+    ax2.plot(timestamp[:(len(timestamp)-1)], std_values)
+    ax2.set_xlabel("'Time (s)'")
+    ax2.set_ylabel("Standard deviation")
+    ax2.fill_between(timestamp[:(len(timestamp)-1)],
+                    std_values - stats.t.ppf(0.975, df=data_rate - 1) * std_values / np.sqrt(data_rate),
+                    std_values + stats.t.ppf(0.975, df=data_rate - 1) * std_values / np.sqrt(data_rate), color='gray',
+                    alpha=0.5)
+
+    # Create Canvas
+    stdfigure = FigureCanvasTkAgg(fig3, master=graphframe)  
+    stdfigure.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    stdfigure.draw()
+
+    
+
+
+
+    
+
+Mean_button = customtkinter.CTkButton(master=root, text="Calculate Mean Over Time", command=MeanOverTime)
+Mean_button.place(relx=0.25, rely=0.9, anchor=customtkinter.E)
+
+Std_Button = customtkinter.CTkButton(master=root, text="Calculate Standard Deviation Over time", command=StandardDeviationGraph)
+Std_Button.place(relx=0.3, rely=0.8, anchor=customtkinter.E)
+
+Quit_button = customtkinter.CTkButton(master=root, text="Quit", command=lambda: root.quit())
+Quit_button.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
+
+
+
+#mean_button = customtkinter.CTkButton(master=meanframe, text="Calculate Mean Over Time", command=MeanOverTime)
+
+
+
+#Mean_button = tk.Button(master=root, text="Mean Value Over time!", command=MeanOverTime)
+#Quit_button = tk.Button(master=root, text="Quit", command=lambda: root.quit())
+
+#Std_Button = tk.Button(master=root, text="Standard Deviation Over time!", command=StandardDeviationGraph)
+
+#second_button = tk.Button(text="Seconda Funzione", command=second_function)
+#second_button.grid(row=1, column=0, pady=20, sticky="W")
+
+#Std_Button.pack(side=tk.BOTTOM, expand=1, anchor='w')
+#Mean_button.pack(side=tk.BOTTOM, expand=1, anchor='w')
+#Quit_button.pack(ipadx=5, ipady=5, expand=1, anchor='sw')
+
+root.mainloop()
+
+
+
+
+
+
+
+
+
+"""
 #for each row except the last one
 for i in range(1, len(timestamp)):
    
@@ -108,11 +249,11 @@ for i in range(1, len(timestamp)):
     timestamp1=datetime.strptime(timestamp[i-1], '%H:%M:%S')
     diff=timestamp2-timestamp1
 
-    """
+    
     the second timestamp refers to the start of the first measure of the array so I substract, from the  
     difference, the fraction of time corresponding to the time needed to acquire a single sample.
     this is an approximation, but it is good enough for the purpose of the plot
-    """
+    
     diff=diff-diff/data_rate
 
     #create a timeline from a timestamp to another
@@ -208,3 +349,4 @@ plt.xlabel('Frequency (Hz)')
 plt.ylabel('Amplitude')
 plt.grid()
 plt.show()
+"""
