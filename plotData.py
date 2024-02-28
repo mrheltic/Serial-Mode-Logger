@@ -4,10 +4,8 @@ import matplotlib.pyplot as plt
 import scipy.stats as stats
 from collections import deque 
 from matplotlib.animation import FuncAnimation 
-from matplotlib.backends.backend_tkagg import (
-     FigureCanvasTkAgg)
 import tkinter as tk
-
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (
@@ -126,6 +124,15 @@ root.title("Logger project Interface")
 
 graphframe = customtkinter.CTkFrame(master=root)
 graphframe.pack(pady=20, padx=60, fill="both", expand=False)
+graphframe.configure(height=400, width=100)
+
+commandframe = customtkinter.CTkFrame(master=root)
+commandframe.pack(pady=20, padx=60, fill="both", expand=False)
+commandframe.configure(height=200, width=100)
+
+
+fig=Figure(figsize=(10, 5), dpi=100)
+
 
 
 #root = tk.Tk()
@@ -154,10 +161,10 @@ def MeanOverTime():
     ax2.set_ylabel("Mean(t)")
 
     # Create Canvas
-    meanfigure = FigureCanvasTkAgg(fig2, master=graphframe)  
-    meanfigure.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=0)
+    canvas = FigureCanvasTkAgg(fig2, master=graphframe)  
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=0)
 
-    meanfigure.draw()
+    canvas.draw()
     #fig2.clf()
     
     
@@ -170,20 +177,41 @@ def MeanOverTime():
     #plt.xlabel('Time (s)')
     #plt.ylabel('Mean value')
     
+
+w=FigureCanvasTkAgg(fig, master=graphframe).get_tk_widget()
+
+def add_plot():
+
+    canvas = FigureCanvasTkAgg(fig, master=graphframe)  
+    w=canvas.get_tk_widget()
+    w.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    #toolbar = NavigationToolbar2Tk(canvas, graphframe) 
+    #toolbar.update() 
+    canvas.draw()
+    return w
+    
     
 
-def StandardDeviationGraph():
+
+
+def remove_plot(w):
+    w.destroy()
+    w=FigureCanvasTkAgg(fig, master=graphframe).get_tk_widget()
+    return w
+     # here you remove the widget from the tk window
+    # w.destroy()
+
+def StandardDeviationGraph(w):
     
 
     # Tkinter Application
     
     #stdframe = tk.Frame(root)
     #stdframe.pack()
- 
     
+    #remove_plot(w)
     # Create the mean graphs
-    fig3=Figure(figsize=(10, 5), dpi=100)
-    ax2 = fig3.add_subplot()
+    ax2 = fig.add_subplot()
     ax2.plot(timestamp[:(len(timestamp)-1)], std_values)
     ax2.set_xlabel("'Time (s)'")
     ax2.set_ylabel("Standard deviation")
@@ -193,23 +221,29 @@ def StandardDeviationGraph():
                     alpha=0.5)
 
     # Create Canvas
-    stdfigure = FigureCanvasTkAgg(fig3, master=graphframe)  
-    stdfigure.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-    stdfigure.draw()
+    w=add_plot()
+    return w
+    
+    
+    #remove_plot(w)
+    
+    
+    
+    
 
     
 
 
 
-    
 
-Mean_button = customtkinter.CTkButton(master=root, text="Calculate Mean Over Time", command=MeanOverTime)
-Mean_button.place(relx=0.25, rely=0.9, anchor=customtkinter.E)
 
-Std_Button = customtkinter.CTkButton(master=root, text="Calculate Standard Deviation Over time", command=StandardDeviationGraph)
+#Mean_button = customtkinter.CTkButton(master=commandframe, text="Calculate Mean Over Time", command=lambda:[remove_plot(w),MeanOverTime])
+#Mean_button.place(relx=0.3, rely=0.9, anchor=customtkinter.E)
+
+Std_Button = customtkinter.CTkButton(master=commandframe, text="Calculate Standard Deviation",command= lambda:[remove_plot(w),StandardDeviationGraph(w)])
 Std_Button.place(relx=0.3, rely=0.8, anchor=customtkinter.E)
 
-Quit_button = customtkinter.CTkButton(master=root, text="Quit", command=lambda: root.quit())
+Quit_button = customtkinter.CTkButton(master=commandframe, text="Quit", command=lambda: root.quit())
 Quit_button.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
 
 
