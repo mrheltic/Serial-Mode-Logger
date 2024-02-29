@@ -4,8 +4,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as stats
 
+# Initialize the matrix and array for the data
+data_matrix = []
+data_array = []
+time_array = []
+
 # Open the serial connection (replace 'COM8' with your serial port)
-ser = serial.Serial('COM13', 250000)
+ser = serial.Serial('COM14', 250000)
 
 # Send the start command to the microcontroller
 time.sleep(1)
@@ -33,16 +38,10 @@ while True:
         print("Data rate: ", data_rate)
         factor= float(ser.readline().decode('utf-8').strip())
         print("Conversion factor: ", factor)
+        timestamp=str(ser.readline().decode('utf-8').strip())
  
         print("\nStarting data acquisition...")
         break
-
-# Initialize the matrix and array for the data
-data_matrix = []
-data_array = []
-timestamp_array = []
-
-time_old = time.time()  #da testare se va bene questa posizione nel codice per la prima misura di time old
 
 try:
     while True:
@@ -55,104 +54,45 @@ try:
                 data_array.append(measurement)  # Add the measurement to the array
                 if len(data_array) == data_rate:  # If the array has reached the desired length
                     data_matrix.append(data_array)  # Add the array to the matrix
-                    timestamp_array.append(time.time())
                     data_array = []  # Reset the array
-                    new_time = time.time()
-                    print('Time:', new_time - time_old)
-                    time_old = new_time
+                    time_array.append(str(ser.readline().decode('utf-8').strip()))
+                   
+                    
                    
 except KeyboardInterrupt:
     # When the program is interrupted, save the matrix in a text file
     data_matrix = data_matrix[1:]  # Remove the first row (various errors)
 
-    #calibration
-    if current_mode == "Voltage" or current_mode == "Current":
-        gain=k_value*factor
-        data_matrix = np.dot(data_matrix,gain)-offset
-    else:
-         if current_mode == "Resistance":
-            num=factor*3.3
-            den = np.dot(data_matrix,k_value)
-            data_matrix= num/den-offset
-
-    print(data_matrix)
-    print(timestamp_array)
-
-    timestamp_array = str(timestamp_array)
-
-    strdata_matrix = str(data_matrix)
-    print(strdata_matrix)
-    utils = "Current measure: " + str(current_mode) + "\n" + "Gain: " + str(k_value) + "\n" + "Offset: " + str(offset) + "\n" + "Array length (Sample rate): " + str(data_rate) + "\n" +"Conversion factor: " + str(factor) + "\n"
-    datasave = np.column_stack((timestamp_array, strdata_matrix))
-
-    np.savetxt('data_matrix.txt', datasave, header=utils, fmt='%s')
-    print("\n\n\n\n\nData saved in 'data_matrix.txt'")
-
 finally:
     ser.close()  # Close the serial connection
 
+    # Print the current mode and data rate
+    utils = "Current measure: " + str(current_mode) + "\n" + "Gain: " + str(k_value) + "\n" + "Offset: " + str(
+        offset) + "\n" + "Array length (Sample rate): " + str(data_rate) + "\n" + "factor: " + str(
+        factor)
+
+    # Saving the last timestamp for dynamic plot
+    last_timestamp = time_array[-1]
+
+    # Removing the last timestamp from the time array
+    time_array = time_array[:-1]
+
+    #cast data_matrix to str
+    data_matrix = np.array(data_matrix).astype(str)
+    time_array = np.array(time_array).astype(str)
+
+    # Merging the time array with the data matrix (time array as first column)
+    saving_matrix = np.column_stack((time_array, data_matrix))
+
+    #add a first row into saving_matrix with utils
+    #saving_matrix = np.vstack((utils, saving_matrix))
+
+    np.savetxt('dataStorage.txt', saving_matrix, delimiter=' ', comments='', fmt='%s', header=utils, encoding='utf-8')
+    print("\n\n\n\n\nData saved in 'dataStorage.txt'")
+
+    # Adding the last timestamp for dynamic plot in the file
+    with open("dataStorage.txt", "a") as file:
+        file.write(str(last_timestamp))
+
     # Flatten the matrix into a one-dimensional array
     data_array = np.concatenate(data_matrix)
-
-    # Create a time array. Every data-rate samples correspond to one second.
-    time_array = np.arange(len(data_array)) / data_rate
-
-    # Create a graph
-    plt.figure(figsize=(4, 3), dpi=500)
-    plt.plot(time_array, data_array)
-    # plt.plot(time_array, data_array)
-    plt.title('Data graph')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Value')
-
-    # Show the graph
-    plt.show()
-
-    # Convert the data_matrix to a numpy array for easier calculations
-    data_matrix = np.array(data_matrix)
-
-    # Calculate the mean and standard deviation for each row
-    mean_values = np.mean(data_matrix, axis=1)
-    std_values = np.std(data_matrix, axis=1)
-
-    # Create a new figure for the mean and standard deviation graphs
-    plt.figure(figsize=(4, 3), dpi=150)
-
-    # Create the mean graph
-    plt.subplot(2, 1, 1)
-    plt.plot(time_array[::data_rate], mean_values)
-    plt.title('Mean value over time')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Mean value')
-
-    # Create the standard deviation graph with error bands
-    plt.subplot(2, 1, 2)
-    plt.plot(time_array[::data_rate], std_values)
-    plt.fill_between(time_array[::data_rate],
-                     std_values - stats.t.ppf(0.975, df=data_rate - 1) * std_values / np.sqrt(data_rate),
-                     std_values + stats.t.ppf(0.975, df=data_rate - 1) * std_values / np.sqrt(data_rate), color='gray',
-                     alpha=0.5)
-    plt.title('STD with 95% confidence interval')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Standard deviation')
-
-    # Show the graphs
-    plt.tight_layout()
-    plt.show()
-
-    # Calculate the FFT of the data
-    fft_result = np.fft.fft(data_array)
-
-    # Calculate the amplitude of the FFT
-    fft_amplitude = np.abs(fft_result)
-
-    # Create the frequency array
-    freqs = np.fft.fftfreq(data_array.size, 1/data_rate)
-
-    # Plot the FFT
-    plt.figure(figsize=(4, 3), dpi=150)
-    plt.plot(freqs, fft_amplitude)
-    plt.title('FFT of the data')
-    plt.xlabel('Frequency (Hz)')
-    plt.ylabel('Amplitude')
-    plt.show()

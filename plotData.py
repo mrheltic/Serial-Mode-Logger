@@ -194,8 +194,8 @@ plt.show()
 # Calculate the FFT of the data
 fft_result = np.fft.fft(data_array)
 
-# Calculate the amplitude of the FFT
-fft_amplitude = np.abs(fft_result)
+# Calculate the amplitude of the FFT in decibels
+fft_amplitude = 20 * np.log10(np.abs(fft_result))
 
 # Create the frequency array
 freqs = np.fft.fftfreq(data_array.size, 1/data_rate)
