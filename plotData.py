@@ -122,18 +122,25 @@ root.resizable(False, False)
 root.title("Logger project Interface")
 
 
-def creategraphframe():
-    global graphframe
-    graphframe = customtkinter.CTkFrame(master=root)
-    graphframe.pack(pady=20, padx=60, fill="both", expand=False)
-    graphframe.configure(height=400, width=100)
+global graphframe, commandframe
+def createframe(frame):
+    
+    frame= customtkinter.CTkFrame.grid(frame)
+    return frame
+    
     
 
 
-def destroyframe(graphframe):
-    customtkinter.CTkFrame.destroy(graphframe)
+def destroyframe(frame):
+    customtkinter.CTkFrame.pack_forget(frame)
+    
+    #customtkinter.CTkFrame.pack_forget(graphframe)
 
-creategraphframe()
+graphframe = customtkinter.CTkFrame(master=root)
+graphframe.pack(pady=20, padx=60, fill="both", expand=False)
+graphframe.configure(height=200, width=100)
+
+#createframe(graphframe)
 
 commandframe = customtkinter.CTkFrame(master=root)
 commandframe.pack(pady=20, padx=60, fill="both", expand=False)
@@ -208,13 +215,15 @@ def add_pack():
 def remove_pack():
     global w
     w.pack_forget()
-    #w=FigureCanvasTkAgg(fig, master=graphframe).get_tk_widget()
+    w=FigureCanvasTkAgg(fig, master=graphframe).get_tk_widget()
     
      # here you remove the widget from the tk window
     # w.destroy()
 
 def StandardDeviationGraph():
+
     global w
+    graphframe=createframe(graphframe)
     
 
     # Tkinter Application
@@ -236,7 +245,9 @@ def StandardDeviationGraph():
     # Create Canvas
     canvas=add_pack()
     canvas.draw()
-    
+
+    Menu_button = customtkinter.CTkButton(master=root, text="Back", command=lambda:[createframe(commandframe),destroyframe(graphframe)])
+    Menu_button.place(relx=0.3, rely=0.8, anchor=customtkinter.E)
     
     
     #remove_plot()
@@ -249,12 +260,12 @@ def StandardDeviationGraph():
 
 
 
-
+#commandframe.pack_forget()
 
 #Mean_button = customtkinter.CTkButton(master=commandframe, text="Calculate Mean Over Time", command=lambda:[remove_pack(),MeanOverTime])
 #Mean_button.place(relx=0.3, rely=0.9, anchor=customtkinter.E)
 
-Std_Button = customtkinter.CTkButton(master=commandframe, text="Calculate Standard Deviation",command= lambda:[remove_pack, StandardDeviationGraph])
+Std_Button = customtkinter.CTkButton(master=commandframe, text="Calculate Standard Deviation",command= lambda:[destroyframe(commandframe),StandardDeviationGraph])
 Std_Button.place(relx=0.3, rely=0.8, anchor=customtkinter.E)
 
 Quit_button = customtkinter.CTkButton(master=commandframe, text="Quit", command=lambda: root.quit())
