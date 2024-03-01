@@ -5,13 +5,7 @@ import scipy.stats as stats
 from collections import deque
 from matplotlib.animation import FuncAnimation
 
-datastore = './Dataset/ramp3 (3.55).txt'
-
-# Create a ramp from 0 to 4, with 100Hz
-amplitude = 3.55
-period = 10
-
-
+datastore = './Dataset/noise shorting.txt'
 
 #export the current mode
 currentmode=np.loadtxt(datastore, dtype='str', max_rows=1)[-1]
@@ -47,43 +41,43 @@ data_matrix = np.dot(data_matrix,gain)-offset
 # Flatten the matrix
 data_array = data_matrix.flatten()
 
-# Calculate points, rounding up to the nearest integer to ensure the period is covered
-points = int(np.ceil(data_rate/period))
+# Calculate the FFT of the data
+fft_result = np.fft.fft(data_array)
 
-# Build the periodical ramp signal
-ramp = np.linspace(0, amplitude, points)
+# Calculate the amplitude of the FFT in decibels
+fft_amplitude = 20 * np.log10(np.abs(fft_result))
 
-# Extract a period from the data array, from the max value to the next max value
-# This is done to find the period of the signal
-min_index = np.argmin(data_array)
-data_array_period = data_array[min_index:min_index + points]
+# Create the frequency array
+freqs = np.fft.fftfreq(data_array.size, 1/data_rate)
 
-# Plot one iteration of data array period and compare it to the generated ramp signal, until the period is found
-fig, (ax1, ax2) = plt.subplots(2, 1)
-
-# Plot data array period and ramp signal
-ax1.plot(data_array_period)
-ax1.plot(ramp)
-
-# Adding labels
-ax1.set_xlabel('Sample number')
-ax1.set_ylabel('Amplitude (V)')
-
-# Adding title and legend
-ax1.set_title('Ramp signal')
-ax1.legend(['Data array period', 'Ramp signal'])
-
-# Plot the error between the data array period and the ramp signal
-ax2.plot(data_array_period - ramp)
-
-# Adding labels
-ax2.set_xlabel('Sample number')
-ax2.set_ylabel('Error')
-
-# Adding title
-ax2.set_title('Error between data array period and ramp signal')
-
-plt.tight_layout()
+# Plot the FFT showing only the positive frequencies
+fig, ax = plt.subplots()
+ax.plot(freqs[:data_array.size//2], fft_amplitude[:data_array.size//2])
 plt.show()
+# Extract the maximum frequency and amplitude
+max_amplitude = np.max(fft_amplitude)
 
+# Extract the frequency at the maximum amplitude
+max_freq = freqs[np.argmax(fft_amplitude)]
 
+# Print the results
+print(f'\n\n\n\nMaximum amplitude: {max_amplitude} dB')
+print(f'Frequency at maximum amplitude: {max_freq} Hz')
+
+# Calculate the ENOB of the signal
+enob = (max_amplitude - 1.76) / 6.02
+
+# Print the ENOB
+print(f'ENOB: {enob:.2f} bits')
+
+# Calculate the SNR of the signal
+snr = (6.02 * enob) - 1.76
+
+# Print the SNR
+print(f'SNR: {snr:.2f} dB')
+
+# Calculate the SINAD of the signal
+sinad = 1.76 + (6.02 * enob)
+
+# Print the SINAD
+print(f'SINAD: {sinad:.2f} dB')

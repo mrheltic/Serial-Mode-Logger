@@ -5,12 +5,12 @@ import scipy.stats as stats
 from collections import deque
 from matplotlib.animation import FuncAnimation
 
-datastore = './Dataset/ramp3 (3.55).txt'
+datastore = './Dataset/sinusoidal wave 200hz.txt'
 
-# Create a ramp from 0 to 4, with 100Hz
+# Create a sinusoidal wave from 0 to 4, 200hz
 amplitude = 3.55
-period = 10
-
+offset = 1.775
+period = 100
 
 
 #export the current mode
@@ -47,43 +47,21 @@ data_matrix = np.dot(data_matrix,gain)-offset
 # Flatten the matrix
 data_array = data_matrix.flatten()
 
-# Calculate points, rounding up to the nearest integer to ensure the period is covered
-points = int(np.ceil(data_rate/period))
-
-# Build the periodical ramp signal
-ramp = np.linspace(0, amplitude, points)
+# Build the periodical sinusoidal signal considering the amplitude and offset
+sinusoidal = amplitude * np.sin(np.linspace(0, 2*np.pi, period)) + offset
 
 # Extract a period from the data array, from the max value to the next max value
 # This is done to find the period of the signal
 min_index = np.argmin(data_array)
-data_array_period = data_array[min_index:min_index + points]
+data_array_period = data_array[min_index:min_index + period]
 
-# Plot one iteration of data array period and compare it to the generated ramp signal, until the period is found
-fig, (ax1, ax2) = plt.subplots(2, 1)
-
-# Plot data array period and ramp signal
-ax1.plot(data_array_period)
-ax1.plot(ramp)
-
-# Adding labels
-ax1.set_xlabel('Sample number')
-ax1.set_ylabel('Amplitude (V)')
-
-# Adding title and legend
-ax1.set_title('Ramp signal')
-ax1.legend(['Data array period', 'Ramp signal'])
-
-# Plot the error between the data array period and the ramp signal
-ax2.plot(data_array_period - ramp)
-
-# Adding labels
-ax2.set_xlabel('Sample number')
-ax2.set_ylabel('Error')
-
-# Adding title
-ax2.set_title('Error between data array period and ramp signal')
-
-plt.tight_layout()
+# Plot one iteration of data array period and compare it to the generated sinusoidal signal, until the period is found
+fig, ax = plt.subplots()
+ax.plot(data_array_period)
+ax.plot(sinusoidal)
 plt.show()
 
-
+# Plot the data array
+#fig, ax = plt.subplots()
+#ax.plot(data_array)
+#plt.show()
