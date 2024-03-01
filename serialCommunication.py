@@ -9,6 +9,11 @@ data_matrix = []
 data_array = []
 time_array = []
 
+# Initialize variables for time evaluation
+start_time = time.time()
+current_time = time.time()
+evaluation_time = []
+
 # Open the serial connection (replace 'COM8' with your serial port)
 ser = serial.Serial('COM14', 250000)
 
@@ -38,7 +43,6 @@ while True:
         print("Data rate: ", data_rate)
         factor= float(ser.readline().decode('utf-8').strip())
         print("Conversion factor: ", factor)
-        timestamp=str(ser.readline().decode('utf-8').strip())
  
         print("\nStarting data acquisition...")
         break
@@ -56,12 +60,15 @@ try:
                     data_matrix.append(data_array)  # Add the array to the matrix
                     data_array = []  # Reset the array
                     time_array.append(str(ser.readline().decode('utf-8').strip()))
+                    current_time = time.time()
+                    evaluation_time.append(current_time - start_time)
+                    start_time = current_time
                    
                     
                    
 except KeyboardInterrupt:
-    # When the program is interrupted, save the matrix in a text file
-    data_matrix = data_matrix[1:]  # Remove the first row (various errors)
+    # If the user stops the program
+    print("Data acquisition stopped by the user")
 
 finally:
     ser.close()  # Close the serial connection
@@ -73,9 +80,6 @@ finally:
 
     # Saving the last timestamp for dynamic plot
     last_timestamp = time_array[-1]
-
-    # Removing the last timestamp from the time array
-    time_array = time_array[:-1]
 
     #cast data_matrix to str
     data_matrix = np.array(data_matrix).astype(str)
@@ -94,5 +98,6 @@ finally:
     with open("dataStorage.txt", "a") as file:
         file.write(str(last_timestamp))
 
-    # Flatten the matrix into a one-dimensional array
-    data_array = np.concatenate(data_matrix)
+    # Evaluating the mean time for each data acquisition
+    mean_time = np.mean(evaluation_time)
+    print("Mean time: ", mean_time)
