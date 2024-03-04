@@ -8,9 +8,9 @@ from matplotlib.animation import FuncAnimation
 datastore = './Dataset/sinusoidal wave 200hz.txt'
 
 # Create a sinusoidal wave from 0 to 4, 200hz
-amplitude = 3.55
-offset = 1.775
-period = 100
+amplitude = 1.775
+offset_sin = 1.775
+period = 87
 
 
 #export the current mode
@@ -42,7 +42,7 @@ data_array = np.concatenate(data_matrix)
 
 #apply the conversion factor
 gain=k_value*factor
-data_matrix = np.dot(data_matrix,gain)-offset
+data_matrix = np.dot(data_matrix,gain)-offset-offset_sin
 
 # Flatten the matrix
 data_array = data_matrix.flatten()
@@ -50,16 +50,57 @@ data_array = data_matrix.flatten()
 # Build the periodical sinusoidal signal considering the amplitude and offset
 sinusoidal = amplitude * np.sin(np.linspace(0, 2*np.pi, period)) + offset
 
-# Extract a period from the data array, from the max value to the next max value
+# Extract a period from the data array, from the min value to the min value
 # This is done to find the period of the signal
-min_index = np.argmin(data_array)
-data_array_period = data_array[min_index:min_index + period]
+max_index = np.argmax(data_array)
+data_array_period = data_array[max_index:max_index + round(2*period)]
+
+# Shift the data array to right so that the period starts at the beginning of the array
+data_array_period = np.roll(data_array_period, -abs(np.argmin(data_array_period)))
+
+for i in range(0, len(data_array_period)):
+    if data_array_period[i]*data_array_period[i-1] < 0:
+        start_data_array_period = i-1
+        break
+
+# Remove the first part of the data array period
+data_array_period = data_array_period[start_data_array_period:]
+
+for i in range(int(0.9*period), len(data_array_period)):
+    if data_array_period[i]*data_array_period[i-1] < 0:
+        end_data_array_period = i-1
+        break
+
+# Remove the last part of the data array period
+data_array_period = data_array_period[:end_data_array_period+(sinusoidal.size - end_data_array_period)]
+
 
 # Plot one iteration of data array period and compare it to the generated sinusoidal signal, until the period is found
-fig, ax = plt.subplots()
-ax.plot(data_array_period)
-ax.plot(sinusoidal)
+fig, (ax1, ax2) = plt.subplots(2, 1)
+
+# Adding labels
+ax1.set_xlabel('Sample number')
+ax1.set_ylabel('Amplitude (V)')
+
+# Adding title and legend
+ax1.set_title('Sinusoidal signal')
+ax1.legend(['Data array period'], loc='upper right')
+ax1.plot(data_array_period)
+ax1.plot(sinusoidal)
+
+# Adding labels
+ax2.set_xlabel('Sample number')
+ax2.set_ylabel('Squared Error')
+
+# Adding title
+ax2.set_title('Squared Error between data array period and ramp signal')
+
+# Plot the difference between the data array period and the sinusoidal signal
+ax2.plot((data_array_period - sinusoidal)**2)
+
+plt.tight_layout()
 plt.show()
+
 
 # Plot the data array
 #fig, ax = plt.subplots()

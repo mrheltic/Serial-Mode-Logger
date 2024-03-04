@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta
 import numpy as np
-import matplotlib.pyplot as plt
-import scipy.stats as stats
 from collections import deque
 from matplotlib.animation import FuncAnimation
 
-datastore = './Dataset/noise shorting.txt'
+import matplotlib.pyplot as plt
+import scipy.stats as stats
+
+datastore = './Dataset/floatingnoise.txt'
 
 #export the current mode
 currentmode=np.loadtxt(datastore, dtype='str', max_rows=1)[-1]
@@ -53,31 +54,44 @@ freqs = np.fft.fftfreq(data_array.size, 1/data_rate)
 # Plot the FFT showing only the positive frequencies
 fig, ax = plt.subplots()
 ax.plot(freqs[:data_array.size//2], fft_amplitude[:data_array.size//2])
-plt.show()
+
 # Extract the maximum frequency and amplitude
 max_amplitude = np.max(fft_amplitude)
 
 # Extract the frequency at the maximum amplitude
 max_freq = freqs[np.argmax(fft_amplitude)]
 
-# Print the results
-print(f'\n\n\n\nMaximum amplitude: {max_amplitude} dB')
-print(f'Frequency at maximum amplitude: {max_freq} Hz')
+# Calculate the ENOB of the signal where enob = n - log2(signal power / noise power)
+# Calculate the signal power
+signal_power = np.mean(data_array ** 2)
 
-# Calculate the ENOB of the signal
-enob = (max_amplitude - 1.76) / 6.02
+# Calculate the noise power
+noise_power = np.mean((data_array - np.mean(data_array)) ** 2)
 
-# Print the ENOB
-print(f'ENOB: {enob:.2f} bits')
+# Calculate the ENOB
+enob = (np.log2(signal_power / noise_power))
 
 # Calculate the SNR of the signal
 snr = (6.02 * enob) - 1.76
 
-# Print the SNR
-print(f'SNR: {snr:.2f} dB')
-
 # Calculate the SINAD of the signal
 sinad = 1.76 + (6.02 * enob)
 
-# Print the SINAD
-print(f'SINAD: {sinad:.2f} dB')
+# Add text annotations for ENOB, signal power, and other information
+enob_text = f'ENOB: {enob:.2f} bits'
+signal_power_text = f'Signal Power: {signal_power:.2f}'
+noise_power_text = f'Noise Power: {noise_power:.2f}'
+max_amplitude_text = f'Maximum Amplitude: {max_amplitude} dB'
+max_freq_text = f'Frequency at Maximum Amplitude: {max_freq} Hz'
+snr_text = f'SNR: {snr:.2f} dB'
+sinad_text = f'SINAD: {sinad:.2f} dB'
+
+ax.text(0.05, 0.95, enob_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
+ax.text(0.05, 0.90, signal_power_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
+ax.text(0.05, 0.85, noise_power_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
+ax.text(0.05, 0.80, max_amplitude_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
+ax.text(0.05, 0.75, max_freq_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
+ax.text(0.05, 0.70, snr_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
+ax.text(0.05, 0.65, sinad_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
+
+plt.show()
