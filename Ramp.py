@@ -12,96 +12,80 @@ from matplotlib.animation import FuncAnimation
 datastore = './Dataset/ramp3.txt'
 
 # Number of columns to skip in the data array
-number_of_columns_to_skip = 6
+number_of_columns_to_skip = 6;
 
-def plot_ramp_signal():
-    """
-    Plot the ramp signal and calculate the error between the data array period and the ramp signal.
+# Create a ramp from 0 to 4, with 100Hz
+amplitude = 3.55
+period = 10
 
-    This function reads data from a file, creates a ramp signal, and plots the data array period along with the ramp signal.
-    It also calculates and plots the error between the data array period and the ramp signal.
+#export the current mode
+currentmode=np.loadtxt(datastore, dtype='str', max_rows=1)[-1]
 
-    Parameters:
-    None
+#export the k value
+k_value=float(np.loadtxt(datastore, dtype='float', usecols=(1), skiprows=1,max_rows=1))
 
-    Returns:
-    None
-    """
+#export the offset
+offset=np.loadtxt(datastore, dtype='float', usecols=(1), skiprows=2, max_rows=1)
 
-    # Create a ramp from 0 to 4, with 100Hz
-    amplitude = 3.55
-    period = 10
+#export the data rate
+data_rate=int(np.loadtxt(datastore, dtype='int', usecols=(4), skiprows=3, max_rows=1))
 
-    #export the current mode
-    currentmode=np.loadtxt(datastore, dtype='str', max_rows=1)[-1]
+#export the conversion factor
+factor=1
 
-    #export the k value
-    k_value=float(np.loadtxt(datastore, dtype='float', usecols=(1), skiprows=1,max_rows=1))
+#export the timestamp
+timestamp = np.loadtxt(datastore, dtype='str', usecols=(0), skiprows=6)
 
-    #export the offset
-    offset=np.loadtxt(datastore, dtype='float', usecols=(1), skiprows=2, max_rows=1)
+#export the dataset(reversed) without the 1st array for a problem
+data_matrix = np.loadtxt(datastore, dtype='int', skiprows=6, usecols=np.arange(1, data_rate+1),max_rows=len(timestamp)-1)
 
-    #export the data rate
-    data_rate=int(np.loadtxt(datastore, dtype='int', usecols=(4), skiprows=3, max_rows=1))
+# Remove the first number n column from matrix (various errors)
+data_matrix = data_matrix[number_of_columns_to_skip:]
 
-    #export the conversion factor
-    factor=1
+#create a 1D array from the matrix
+data_array = np.concatenate(data_matrix)
 
-    #export the timestamp
-    timestamp = np.loadtxt(datastore, dtype='str', usecols=(0), skiprows=6)
+#apply the conversion factor
+gain=k_value*factor
+data_matrix = np.dot(data_matrix,gain)-offset;
 
-    #export the dataset(reversed) without the 1st array for a problem
-    data_matrix = np.loadtxt(datastore, dtype='int', skiprows=6, usecols=np.arange(1, data_rate+1),max_rows=len(timestamp)-1)
+# Flatten the matrix
+data_array = data_matrix.flatten()
 
-    # Remove the first number n column from matrix (various errors)
-    data_matrix = data_matrix[number_of_columns_to_skip:]
+# Calculate points, rounding up to the nearest integer to ensure the period is covered
+points = int(np.ceil(data_rate/period))
 
-    #create a 1D array from the matrix
-    data_array = np.concatenate(data_matrix)
+# Build the periodical ramp signal
+ramp = np.linspace(0, amplitude, points)
 
-    #apply the conversion factor
-    gain=k_value*factor
-    data_matrix = np.dot(data_matrix,gain)-offset
+# Shifting the data array to the right to start from the minimum value
+min_index = np.argmin(data_array)
+data_array_period = data_array[min_index:min_index + points]
 
-    # Flatten the matrix
-    data_array = data_matrix.flatten()
+# Plot one iteration of data array period and compare it to the generated ramp signal, until the period is found
+fig, (ax1, ax2) = plt.subplots(2, 1)
 
-    # Calculate points, rounding up to the nearest integer to ensure the period is covered
-    points = int(np.ceil(data_rate/period))
+# Plot data array period and ramp signal
+ax1.plot(data_array_period)
+ax1.plot(ramp)
 
-    # Build the periodical ramp signal
-    ramp = np.linspace(0, amplitude, points)
+# Adding labels
+ax1.set_xlabel('Sample number')
+ax1.set_ylabel('Amplitude (V)')
 
-    # Shifting the data array to the right to start from the minimum value
-    min_index = np.argmin(data_array)
-    data_array_period = data_array[min_index:min_index + points]
+# Adding title and legend
+ax1.set_title('Ramp signal')
+ax1.legend(['Data array period', 'Ramp signal'])
 
-    # Plot one iteration of data array period and compare it to the generated ramp signal, until the period is found
-    fig, (ax1, ax2) = plt.subplots(2, 1)
+# Plot the error between the data array period and the ramp signal
+ax2.plot((data_array_period - ramp)**2)
 
-    # Plot data array period and ramp signal
-    ax1.plot(data_array_period)
-    ax1.plot(ramp)
+# Adding labels
+ax2.set_xlabel('Sample number')
+ax2.set_ylabel('Squared Error')
 
-    # Adding labels
-    ax1.set_xlabel('Sample number')
-    ax1.set_ylabel('Amplitude (V)')
+# Adding title
+ax2.set_title('Squared Error between data array period and ramp signal')
 
-    # Adding title and legend
-    ax1.set_title('Ramp signal')
-    ax1.legend(['Data array period', 'Ramp signal'])
-
-    # Plot the error between the data array period and the ramp signal
-    ax2.plot((data_array_period - ramp)**2)
-
-    # Adding labels
-    ax2.set_xlabel('Sample number')
-    ax2.set_ylabel('Squared Error')
-
-    # Adding title
-    ax2.set_title('Squared Error between data array period and ramp signal')
-
-    plt.tight_layout()
-    plt.show()
-
-plot_ramp_signal()
+plt.tight_layout()
+plt.show()

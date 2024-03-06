@@ -48,10 +48,9 @@ data_matrix = np.dot(data_matrix,gain)-offset-offset_sin
 data_array = data_matrix.flatten()
 
 # Build the periodical sinusoidal signal considering the amplitude and offset
-sinusoidal = amplitude * np.sin(np.linspace(0, 2*np.pi, period)) + offset
+sinusoidal = amplitude * np.sin(np.linspace(0, 2*np.pi, period))
 
-# Extract a period from the data array, from the min value to the min value
-# This is done to find the period of the signal
+# Find the period in the data array and extract it
 max_index = np.argmax(data_array)
 data_array_period = data_array[max_index:max_index + round(2*period)]
 
