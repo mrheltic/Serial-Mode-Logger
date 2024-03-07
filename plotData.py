@@ -32,7 +32,7 @@ data_matrix = np.loadtxt('dataStorage.txt', dtype='int', skiprows=6, usecols=np.
 data_matrix = data_matrix[1:]
 
 #create a 1D array from the matrix
-data_array = np.concatenate(data_matrix) 
+data_array = np.concatenate(data_matrix) # It could be changed to .reshape
 
 #declaration of the mean values array
 mean_values = np.zeros(data_matrix.shape[0]) 

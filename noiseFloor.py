@@ -6,7 +6,7 @@ from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
 import scipy.stats as stats
 
-datastore = './Dataset/shortingnoise.txt'
+datastore = './Dataset/floatingnoise.txt'
 
 #export the current mode
 currentmode=np.loadtxt(datastore, dtype='str', max_rows=1)[-1]
@@ -73,6 +73,7 @@ enob = (np.log2(signal_power / noise_power))
 
 # Calculate the SNR of the signal
 snr = (6.02 * enob) - 1.76
+snr2 = 20 * np.log10(signal_power / noise_power)
 # Calculate the SINAD of the signal
 sinad = 1.76 + (6.02 * enob)
 

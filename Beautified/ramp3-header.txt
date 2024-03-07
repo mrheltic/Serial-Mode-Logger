@@ -1,0 +1,5 @@
+Current measure: Voltage
+Gain: 0.0001250000059371814
+Offset: 0.0
+Array length (Sample rate): 860
+factor: 4.33
