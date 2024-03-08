@@ -5,7 +5,7 @@ from matplotlib.animation import FuncAnimation
 
 import matplotlib.pyplot as plt
 import scipy.stats as stats
-
+"""
 datastore = './Dataset/floatingnoise.txt'
 
 #export the current mode
@@ -34,64 +34,28 @@ data_matrix = data_matrix[5:]
 
 #create a 1D array from the matrix
 data_array = np.concatenate(data_matrix)
+"""
+def plotNoise(k_value, factor,offset,data_matrix,data_array,data_rate):
+        #apply the conversion factor
+        gain=k_value*factor
+        data_matrix = np.dot(data_matrix,gain)-offset
 
-#apply the conversion factor
-gain=k_value*factor
-data_matrix = np.dot(data_matrix,gain)-offset
+        # Flatten the matrix
+        data_array = data_matrix.flatten()
 
-# Flatten the matrix
-data_array = data_matrix.flatten()
+        # Calculate the FFT of the data
+        fft_result = np.fft.fft(data_array)
 
-# Calculate the FFT of the data
-fft_result = np.fft.fft(data_array)
+        # Calculate the amplitude of the FFT in decibels
+        fft_amplitude = 20 * np.log10(np.abs(fft_result))
 
-# Calculate the amplitude of the FFT in decibels
-fft_amplitude = 20 * np.log10(np.abs(fft_result))
+        # Create the frequency array
+        freqs = np.fft.fftfreq(data_array.size, 1/data_rate)
 
-# Create the frequency array
-freqs = np.fft.fftfreq(data_array.size, 1/data_rate)
+        return freqs, fft_amplitude
+        # Plot the FFT showing only the positive frequencies
+        #fig, ax = plt.subplots()
+        #ax.plot(freqs[:data_array.size//2], fft_amplitude[:data_array.size//2])
 
-# Plot the FFT showing only the positive frequencies
-fig, ax = plt.subplots()
-ax.plot(freqs[:data_array.size//2], fft_amplitude[:data_array.size//2])
-
-# Extract the maximum frequency and amplitude
-max_amplitude = np.max(fft_amplitude)
-
-# Extract the frequency at the maximum amplitude
-max_freq = freqs[np.argmax(fft_amplitude)]
-
-# Calculate the ENOB of the signal where enob = n - log2(signal power / noise power)
-# Calculate the signal power
-signal_power = np.mean(data_array ** 2)
-
-# Calculate the noise power
-noise_power = np.mean((data_array - np.mean(data_array)) ** 2)
-
-# Calculate the ENOB
-enob = (np.log2(signal_power / noise_power))
-
-# Calculate the SNR of the signal
-snr = (6.02 * enob) - 1.76
-snr2 = 20 * np.log10(signal_power / noise_power)
-# Calculate the SINAD of the signal
-sinad = 1.76 + (6.02 * enob)
-
-# Add text annotations for ENOB, signal power, and other information
-enob_text = f'ENOB: {enob:.2f} bits'
-signal_power_text = f'Signal Power: {signal_power:.2f}'
-noise_power_text = f'Noise Power: {noise_power:.2f}'
-max_amplitude_text = f'Maximum Amplitude: {max_amplitude} dB'
-max_freq_text = f'Frequency at Maximum Amplitude: {max_freq} Hz'
-snr_text = f'SNR: {snr:.2f} dB'
-sinad_text = f'SINAD: {sinad:.2f} dB'
-
-ax.text(0.05, 0.95, enob_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
-ax.text(0.05, 0.90, signal_power_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
-ax.text(0.05, 0.85, noise_power_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
-ax.text(0.05, 0.80, max_amplitude_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
-ax.text(0.05, 0.75, max_freq_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
-ax.text(0.05, 0.70, snr_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
-ax.text(0.05, 0.65, sinad_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
-
-plt.show()
+        
+        
