@@ -62,12 +62,20 @@ ramp = np.linspace(0, amplitude, points)
 min_index = np.argmin(data_array)
 data_array_period = data_array[min_index:min_index + points]
 
+# Fit a lineer model to the data array period
+slope, intercept, r_value, p_value, std_err = stats.linregress(np.arange(points), data_array_period)
+
+# Fit a lineer model to the ramp signal
+slope_ramp, intercept_ramp, r_value_ramp, p_value_ramp, std_err_ramp = stats.linregress(np.arange(points), ramp)
+
 # Plot one iteration of data array period and compare it to the generated ramp signal, until the period is found
 fig, (ax1, ax2) = plt.subplots(2, 1)
 
-# Plot data array period and ramp signal
+# Plot the linear model of the data array period and the ramp signal
 ax1.plot(data_array_period)
+ax1.plot(slope * np.arange(points) + intercept)
 ax1.plot(ramp)
+ax1.plot(slope_ramp * np.arange(points) + intercept_ramp)
 
 # Adding labels
 ax1.set_xlabel('Sample number')
@@ -77,15 +85,15 @@ ax1.set_ylabel('Amplitude (V)')
 ax1.set_title('Ramp signal')
 ax1.legend(['Data array period', 'Ramp signal'])
 
-# Plot the error between the data array period and the ramp signal
-ax2.plot((data_array_period - ramp)**2)
+# Plot the error between the data array period and the ramp signal both with linear model
+ax2.plot((slope_ramp * np.arange(points) + intercept_ramp) - (slope * np.arange(points) + intercept))
 
 # Adding labels
 ax2.set_xlabel('Sample number')
-ax2.set_ylabel('Squared Error')
+ax2.set_ylabel('Error')
 
 # Adding title
-ax2.set_title('Squared Error between data array period and ramp signal')
+ax2.set_title(' Error between data array period and ramp signal')
 
 plt.tight_layout()
 plt.show()

@@ -5,28 +5,31 @@ import scipy.stats as stats
 from collections import deque 
 from matplotlib.animation import FuncAnimation 
 
-
+datastore = './Dataset/ramp3.txt'
 
 #export the current mode
-currentmode=np.loadtxt('dataStorage.txt', dtype='str', max_rows=1)[-1]
+currentmode=np.loadtxt(datastore, dtype='str', max_rows=1)[-1]
 
 #export the k value
-k_value=float(np.loadtxt('dataStorage.txt', dtype='float', usecols=(1), skiprows=1,max_rows=1))
+k_value=float(np.loadtxt(datastore, dtype='float', usecols=(1), skiprows=1,max_rows=1))
 
 #export the offset
-offset=np.loadtxt('dataStorage.txt', dtype='float', usecols=(1), skiprows=2, max_rows=1) 
+offset=np.loadtxt(datastore, dtype='float', usecols=(1), skiprows=2, max_rows=1) 
 
 #export the data rate
-data_rate=int(np.loadtxt('dataStorage.txt', dtype='int', usecols=(4), skiprows=3, max_rows=1))
+data_rate=int(np.loadtxt(datastore, dtype='int', usecols=(4), skiprows=3, max_rows=1))
 
 #export the conversion factor
-factor=np.loadtxt('dataStorage.txt', dtype='float', usecols=(1), skiprows=4, max_rows=1) 
+factor=np.loadtxt(datastore, dtype='float', usecols=(1), skiprows=4, max_rows=1) 
+
+# Set the factor to 1 if you're using the FSR of ADC
+factor=1
 
 #export the timestamp
-timestamp = np.loadtxt('dataStorage.txt', dtype='str', usecols=(0), skiprows=6) 
+timestamp = np.loadtxt(datastore, dtype='str', usecols=(0), skiprows=6) 
 
 #export the dataset(reversed) without the 1st array for a problem
-data_matrix = np.loadtxt('dataStorage.txt', dtype='int', skiprows=6, usecols=np.arange(1, data_rate+1),max_rows=len(timestamp)-1)
+data_matrix = np.loadtxt(datastore, dtype='int', skiprows=6, usecols=np.arange(1, data_rate+1),max_rows=len(timestamp)-1)
 
 # Remove the first column from matrix (various errors)
 data_matrix = data_matrix[1:]
