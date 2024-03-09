@@ -6,6 +6,8 @@ from collections import deque
 from matplotlib.animation import FuncAnimation 
 
 datastore = './Dataset/ramp3.txt'
+#number of array to skip in the dataset
+number_of_rows_to_skip = 1
 
 #export the current mode
 currentmode=np.loadtxt(datastore, dtype='str', max_rows=1)[-1]
@@ -26,13 +28,10 @@ factor=np.loadtxt(datastore, dtype='float', usecols=(1), skiprows=4, max_rows=1)
 factor=1
 
 #export the timestamp
-timestamp = np.loadtxt(datastore, dtype='str', usecols=(0), skiprows=6) 
+timestamp = np.loadtxt('dataStorage.txt', dtype='str', usecols=(0), skiprows=5+number_of_rows_to_skip) 
 
 #export the dataset(reversed) without the 1st array for a problem
-data_matrix = np.loadtxt(datastore, dtype='int', skiprows=6, usecols=np.arange(1, data_rate+1),max_rows=len(timestamp)-1)
-
-# Remove the first column from matrix (various errors)
-data_matrix = data_matrix[1:]
+data_matrix = np.loadtxt('dataStorage.txt', dtype='int', skiprows=5+number_of_rows_to_skip, usecols=np.arange(1, data_rate+1),max_rows=len(timestamp)-1)
 
 #create a 1D array from the matrix
 data_array = np.concatenate(data_matrix) # It could be changed to .reshape
