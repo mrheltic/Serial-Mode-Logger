@@ -81,11 +81,8 @@ def fit_sin(tt, yy):
     '''Fit sin to the input time sequence, and return fitting parameters "amp", "omega", "phase", "offset", "freq", "period" and "fitfunc"'''
     tt = np.array(tt)
     yy = np.array(yy)
-    ff = np.fft.fftfreq(len(tt), period)   # assume uniform spacing
+    ff = np.fft.fftfreq(len(tt), tt[1]-tt[0])   # assume uniform spacing
     Fyy = abs(np.fft.fft(yy))
-
-    
-
 
 
     guess_freq = abs(ff[np.argmax(Fyy[1:])+1])   # excluding the zero frequency "peak", which is related to offset
@@ -100,20 +97,20 @@ def fit_sin(tt, yy):
     fitfunc = lambda t: A * np.sin(w*t + p) + c
     return {"amp": A, "omega": w, "phase": p, "offset": c, "freq": f, "period": 1./f, "fitfunc": fitfunc, "maxcov": np.max(pcov), "rawres": (guess,popt,pcov)}
 
-N, amp, omega, phase, offset, noise = 500, 1., 2., .5, 4., 3
-#N, amp, omega, phase, offset, noise = 50, 1., .4, .5, 4., .2
-#N, amp, omega, phase, offset, noise = 200, 1., 20, .5, 4., 1
+
 tt = np.linspace(0,10, 87)
 
 
 yy = data_array_period
 res=fit_sin(tt, yy)
+res2=fit_sin(tt, sinusoidal)
 
 
-
-# Plot one iteration of data array period and compare it to the generated sinusoidal signal, until the period is found
 fig, (ax1, ax2) = plt.subplots(2, 1)
 
+# Plot the linear model of the data array period and the ramp signal
+ax1.plot(res2["fitfunc"](tt), "b-", label="y true curve", linewidth=2, color='blue', linestyle='dashed')
+ax1.plot(res['fitfunc'](tt), "g-", label="y fit curve", linewidth=2,color='red')
 
 
 # Adding labels
@@ -122,47 +119,20 @@ ax1.set_ylabel('Amplitude (V)')
 
 # Adding title and legend
 ax1.set_title('Sinusoidal signal')
-ax1.legend(['Data array period'], loc='upper right')
-plt.plot(tt, res["fitfunc"](tt), "r-", label="y fit curve", linewidth=2)
-ax1.plot(sinusoidal)
+ax1.legend(['Data array period', 'Sinusoidal signal'])
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Adding title and legend
-ax1.set_title('Sinusoidal signal')
-ax1.legend(['Data array period'], loc='upper right')
-ax1.plot(data_array_period)
-ax1.plot(sinusoidal)
+# Plot the error between the data array period and the ramp signal both with linear model
+ax2.plot((res2["fitfunc"](tt)) - (res["fitfunc"](tt)))
 
 # Adding labels
 ax2.set_xlabel('Sample number')
-ax2.set_ylabel('Squared Error')
+ax2.set_ylabel('Error')
 
 # Adding title
-ax2.set_title('Squared Error between data array period and ramp signal')
+ax2.set_title(' Error between data array period and ramp signal')
 
-# Plot the difference between the data array period and the sinusoidal signal
-ax2.plot((data_array_period - sinusoidal)**2)
 
 plt.tight_layout()
 plt.show()
 
-
-# Plot the data array
-#fig, ax = plt.subplots()
-#ax.plot(data_array)
-#plt.show()
 
