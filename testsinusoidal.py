@@ -54,14 +54,14 @@ sinusoidal = amplitude * np.sin(np.linspace(0, 2*np.pi, period))
 
 
 data_array_period=data_array
-'''
+
 # Find the period in the data array and extract it
 max_index = np.argmax(data_array)
 data_array_period = data_array[max_index:max_index + round(2*period)]
 
 # Shift the data array to right so that the period starts at the beginning of the array
 data_array_period = np.roll(data_array_period, -abs(np.argmin(data_array_period)))
-'''
+
 for i in range(0, len(data_array_period)):
     if data_array_period[i]*data_array_period[i-1] < 0:
         start_data_array_period = i-1
