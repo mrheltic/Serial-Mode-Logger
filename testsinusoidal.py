@@ -75,9 +75,23 @@ for i in range(int(0.9*period), len(data_array_period)):
         end_data_array_period = i-1
         break
 
-# Remove the last part of the data array period
-data_array_period = data_array_period[:end_data_array_period+(sinusoidal.size - end_data_array_period)]
+# Implement bisect to iterate and find
 
+tolerance = 1e-20
+
+def find_sign_change(data_array_period, start, end, tolerance):
+    while end - start > 1:
+        mid = (start + end) // 2
+        if data_array_period[mid] * data_array_period[start] < 0:
+            end = mid
+        else:
+            start = mid
+    return start
+
+start_data_array_period = find_sign_change(data_array_period, 0, int(0.9*period), tolerance)
+end_data_array_period = find_sign_change(data_array_period, int(0.9*period), len(data_array_period), tolerance)
+
+data_array_period = data_array_period[:end_data_array_period+(sinusoidal.size - end_data_array_period)]
 
 def fit_sin(tt, yy):
     '''Fit sin to the input time sequence, and return fitting parameters "amp", "omega", "phase", "offset", "freq", "period" and "fitfunc"'''
@@ -101,6 +115,7 @@ def fit_sin(tt, yy):
 
 
 tt = np.linspace(0,10, 87)
+
 
 
 yy = data_array_period
