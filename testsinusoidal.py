@@ -6,7 +6,7 @@ import scipy.optimize
 from datetime import datetime, timedelta
 
 
-datastore = './Dataset/sinusoidal wave 200hz.txt'
+datastore = './Dataset/sinusoidalwave.txt'
 
 # Create a sinusoidal wave from 0 to 4, 200hz
 amplitude = 1.775
