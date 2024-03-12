@@ -2,7 +2,7 @@ import csv
 from operator import index
 
 FOLDER = "./Beautified"
-DATASET_FOLDER = "./Dataset"
+DATASET_FOLDER = "../Datasets"
 
 # Change this manually
 DATASET_FILE = "ramp3.txt"
