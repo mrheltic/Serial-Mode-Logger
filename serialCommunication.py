@@ -1,6 +1,7 @@
 import serial
 import time
 import numpy as np
+import os
 import matplotlib.pyplot as plt
 import scipy.stats as stats
 
@@ -91,8 +92,16 @@ finally:
     #add a first row into saving_matrix with utils
     #saving_matrix = np.vstack((utils, saving_matrix))
 
-    np.savetxt('dataStorage.txt', saving_matrix, delimiter=' ', comments='', fmt='%s', header=utils, encoding='utf-8')
-    print("\n\n\n\n\nData saved in 'dataStorage.txt'")
+    # Check if the file already exists
+    if os.path.exists("dataStorage.txt"):
+        # Generate a unique filename
+        filename = "dataStorage_" + str(time.time()) + ".txt"
+    else:
+        filename = "dataStorage.txt"
+
+    # Save the data to the file
+    np.savetxt(filename, saving_matrix, delimiter=' ', comments='', fmt='%s', header=utils, encoding='utf-8')
+    print("\n\n\n\n\nData saved in '" + filename + "'")
 
     # Adding the last timestamp for dynamic plot in the file
     with open("dataStorage.txt", "a") as file:
