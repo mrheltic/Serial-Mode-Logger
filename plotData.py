@@ -6,7 +6,7 @@ import Conversion.conversion as conversion
 import DataExtraction.extractdata as extractdata
 
 
-datastore = 'dataStorage_1710348134.657108.txt'
+datastore = './Dataset/Ramp/rampFSR1.ds32'
 
 # Extract the data
 currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore)

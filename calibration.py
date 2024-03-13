@@ -5,57 +5,44 @@ import scipy.stats as stats
 from collections import deque
 from matplotlib.animation import FuncAnimation
 import Conversion.conversion as conversion
-import DataExtraction.extractdata as extractdata
-import DataExtraction.extractramp as extractramp
+import DataExtraction.extractforcalibration as extractforcalibration
 
 # Ramp 1: 4V, 100Hz
 # Ramp 2: 3.65V, 100Hz
 # Ramp 3: 3.55V, 100Hz
 
-datastore1 = './Dataset/Ramp/ramp3.txt'
-datastore2 = './Dataset/Ramp/ramp2.txt'
-datastore3 = './Dataset/Ramp/ramp1.txt'
-datastore4 = './Dataset/Ramp/ramp1.txt'
-datastore5 = './Dataset/Ramp/ramp1.txt'
-# Extract the data
-currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore1)
+data_rate = 860
+number_of_rows_to_skip = 1
+number_of_seconds = 10
 
-# Set the conversion factor to 1 if you're using the FSR of ADC
-factor = 1
+# Setting the parameters for the calibration
+amplitude = 3.55
+offset = 0
 
-# Convert the data
-data_matrix, data_array = conversion.convert_data(currentmode, k_value, factor, offset, data_matrix)
+folder = './Dataset/Calibration'
 
-# Fit a lineer model to the data array period
-slope, intercept, r_value, p_value, std_err = stats.linregress(np.arange(points), data_array_period)
+# Extract the array of mean values
+mean_values, ramp_values = extractforcalibration.extract_for_calibration(folder, number_of_rows_to_skip, data_rate, number_of_seconds, amplitude, offset)
 
-# Fit a lineer model to the ramp signal
-slope_ramp, intercept_ramp, r_value_ramp, p_value_ramp, std_err_ramp = stats.linregress(np.arange(points), ramp)
+points = len(mean_values)
 
-# Plot one iteration of data array period and compare it to the generated ramp signal, until the period is found
-fig, (ax1, ax2) = plt.subplots(2, 1)
+# Fit a linear model to the data array period
+slope, intercept, r_value, p_value, std_err = stats.linregress(mean_values, ramp_values)
 
-# Plot the linear model of the data array period and the ramp signal
-ax1.plot(data_array_period)
-ax1.plot(slope * np.arange(len(data_array_period)) + intercept)
-
-# Adding labels
-ax1.set_xlabel('Sample number')
-ax1.set_ylabel('Amplitude (V)')
-
-# Adding title and legend
-ax1.set_title('Ramp signal')
-ax1.legend(['Data array period', 'Ramp signal'])
-
-# Plot the error between the data array period and the ramp signal both with linear model
-ax2.plot((slope_ramp * np.arange(len(data_array_period)) + intercept_ramp) - (slope * np.arange(points) + intercept))
-
-# Adding labels
-ax2.set_xlabel('Sample number')
-ax2.set_ylabel('Error')
-
-# Adding title
-ax2.set_title(' Error between data array period and ramp signal')
-
-plt.tight_layout()
+# Plot the data array period and the resulting line
+plt.figure(1)
+plt.clf()
+plt.plot(mean_values, ramp_values, 'go', linewidth=1, markeredgecolor='k', markerfacecolor='g', markersize=10)
+plt.plot(mean_values, slope * mean_values + intercept)
+plt.title('Linear regression')
+plt.xlabel('Mean values')
+plt.ylabel('Ramp values')
+plt.legend(['Data', 'Resulting line'])
 plt.show()
+
+# Clear the terminal
+print("\033c")
+
+# Print the slope and intercept with 50 digits precision
+print(f"Slope: {slope:.50f}")
+print(f"Intercept: {intercept:.50f}\n\n")
