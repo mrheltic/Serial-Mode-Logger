@@ -7,7 +7,7 @@ import scipy.stats as stats
 import Conversion.conversion as conversion
 import DataExtraction.extractdata as extractdata
 
-datastore = './Dataset//Sinusoidal wave/sinusoidalwave.txt'
+datastore = './Dataset/Noise/shortingnoise.txt'
 
 # Extract the data
 currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore)
@@ -20,6 +20,8 @@ data_matrix, data_array = conversion.convert_data(currentmode, k_value, factor, 
 
 # Calculate the FFT of the data
 fft_result = np.fft.fft(data_array)
+
+fft_result[0] = 1
 
 # Calculate the amplitude of the FFT in decibels
 fft_amplitude = 20 * np.log10(np.abs(fft_result))

@@ -7,7 +7,7 @@ import scipy.stats as stats
 import Conversion.conversion as conversion
 import DataExtraction.extractdata as extractdata
 
-datastore = './Dataset//Sinusoidal wave/sinusoidalwave.txt'
+datastore = './Dataset/Ramp/constant.ds32'
 
 # Extract the data
 currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore)
@@ -41,7 +41,7 @@ max_amplitude = np.max(fft_amplitude)
 # Extract the frequency at the maximum amplitude
 max_freq = freqs[np.argmax(fft_amplitude)]
 
-# Extract the harmonics of the max frequency
+'''# Extract the harmonics of the max frequency
 harmonics = []
 for i in range(2, 6):
     harmonics.append(max_freq * i)
@@ -76,8 +76,8 @@ for i in range(0, len(harmonics_max_amplitude)):
 # Substitute the amplitude of the harmonics with the mean value of the noise
 for i in range(0, len(harmonics_max_amplitude)):
     fft_amplitude[(freqs > harmonics_bins[i]) & (freqs < harmonics_bins[i+1])] = np.mean(fft_amplitude[(freqs > harmonics_bins[i]) & (freqs < harmonics_bins[i+1])])
-
-# Calculate the noise power from the other frequencies
+'''
+'''# Calculate the noise power from the other frequencies
 noise_power = 0
 
 for i in range(0, len(fft_amplitude)):
@@ -108,5 +108,5 @@ ax.text(0.05, 0.80, max_amplitude_text, transform=ax.transAxes, fontsize=10, ver
 ax.text(0.05, 0.75, max_freq_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
 ax.text(0.05, 0.70, snr_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
 ax.text(0.05, 0.65, sinad_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
-
+'''
 plt.show()

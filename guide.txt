@@ -1,0 +1,52 @@
+rampFSR
+    Period 5Hz
+    FSR 4V (2vpp - 2 off)
+    Factor 1
+
+rampFSRexternal
+    Period 5Hz
+    FSR 4V (2vpp - 2 off)
+    ADC connected to ext dc
+    Factor 1
+
+external1
+    Period 5kHz (DC)
+    FSR 4V (2vpp - 2 off)
+    Factor 1
+    DC gen to 4.5
+
+external2
+    Period 5kHz (DC)
+    FSR 4V (2vpp - 2 off)
+    Factor 1
+    DC gen to 5
+
+external3
+    Period 5kHz (DC)
+    FSR 4V (2vpp - 2 off)
+    Factor 1
+    DC gen to 5.2
+
+external4
+    Period 5kHz (DC)
+    FSR 4V (2vpp - 2 off)
+    Factor 1
+    DC gen to 5.5
+
+sinusoidal1
+    Period 50
+    FSR 3.55V (2vpp - 2 off)
+    Factor 1
+    DC gen to 5.5
+
+sinusoidal2
+    Period 50
+    FSR 3.55V (2vpp - 2 off)
+    Factor 1
+    DC gen to 5.5
+
+sinusoidal3
+    Period 50
+    FSR 3.55V (2vpp - 2 off)
+    Factor 1
+    DC gen to 5.5

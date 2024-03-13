@@ -92,19 +92,15 @@ finally:
     #add a first row into saving_matrix with utils
     #saving_matrix = np.vstack((utils, saving_matrix))
 
-    # Check if the file already exists
-    if os.path.exists("dataStorage.txt"):
-        # Generate a unique filename
-        filename = "dataStorage_" + str(time.time()) + ".txt"
-    else:
-        filename = "dataStorage.txt"
+    # Create the filename with the current date and time
+    filename = "dataStorage_" + time.strftime("%Y-%m-%d_%H-%M-%S") + ".ds32"
 
     # Save the data to the file
     np.savetxt(filename, saving_matrix, delimiter=' ', comments='', fmt='%s', header=utils, encoding='utf-8')
     print("\n\n\n\n\nData saved in '" + filename + "'")
 
     # Adding the last timestamp for dynamic plot in the file
-    with open("dataStorage.txt", "a") as file:
+    with open(filename, "a") as file:
         file.write(str(last_timestamp))
 
     # Evaluating the mean time for each data acquisition

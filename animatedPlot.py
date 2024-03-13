@@ -6,7 +6,7 @@ from collections import deque
 from matplotlib.animation import FuncAnimation 
 import Conversion.animatedConversion as animatedConversion
 
-datastore = './Dataset//Ramp/ramp3.txt'
+datastore = './Dataset/Ramp/rampFSR3.txt'
 #number of array to skip in the dataset
 number_of_rows_to_skip = 1
 
@@ -26,7 +26,7 @@ data_rate=int(np.loadtxt(datastore, dtype='int', usecols=(4), skiprows=3, max_ro
 factor=np.loadtxt(datastore, dtype='float', usecols=(1), skiprows=4, max_rows=1) 
 
 # Set the factor to 1 if you're using the FSR of ADC
-#factor=1
+factor=1
 
 #export the timestamp
 timestamp = np.loadtxt(datastore, dtype='str', usecols=(0), skiprows=5+number_of_rows_to_skip) 
@@ -61,7 +61,7 @@ plt.grid()
 scatter=ax.scatter([], [])
 
 #set the maximum number of data points to be shown
-data_points = deque(maxlen=data_rate) 
+data_points = deque(maxlen=2*data_rate) 
 
 # Convert the data
 data_matrix = animatedConversion.convert_data(currentmode, k_value, factor, offset, data_matrix, ax)
@@ -118,7 +118,7 @@ for i in range(1, len(timestamp)):
         line.set_data(x_values, y_values) 
 
         #change the following parameter to adjust the speed of the plot
-        plt.pause(0.0000001) 
+        plt.pause(0.01) 
     
 
 

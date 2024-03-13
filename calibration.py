@@ -12,22 +12,19 @@ import DataExtraction.extractramp as extractramp
 # Ramp 2: 3.65V, 100Hz
 # Ramp 3: 3.55V, 100Hz
 
-datastore = './Dataset/Ramp/rampFSR.txt'
-
-# Create a ramp from 0 to 4, with 100Hz
-amplitude = 3.55
-period = 5
-
+datastore1 = './Dataset/Ramp/ramp3.txt'
+datastore2 = './Dataset/Ramp/ramp2.txt'
+datastore3 = './Dataset/Ramp/ramp1.txt'
+datastore4 = './Dataset/Ramp/ramp1.txt'
+datastore5 = './Dataset/Ramp/ramp1.txt'
 # Extract the data
-currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore)
+currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore1)
 
 # Set the conversion factor to 1 if you're using the FSR of ADC
 factor = 1
 
 # Convert the data
 data_matrix, data_array = conversion.convert_data(currentmode, k_value, factor, offset, data_matrix)
-
-data_array_period, ramp, points = extractramp.extract_ramp(data_array, period, data_rate, amplitude)
 
 # Fit a lineer model to the data array period
 slope, intercept, r_value, p_value, std_err = stats.linregress(np.arange(points), data_array_period)
@@ -41,8 +38,6 @@ fig, (ax1, ax2) = plt.subplots(2, 1)
 # Plot the linear model of the data array period and the ramp signal
 ax1.plot(data_array_period)
 ax1.plot(slope * np.arange(len(data_array_period)) + intercept)
-ax1.plot(ramp)
-ax1.plot(slope_ramp * np.arange(len(data_array_period)) + intercept_ramp)
 
 # Adding labels
 ax1.set_xlabel('Sample number')

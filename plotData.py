@@ -6,10 +6,12 @@ import Conversion.conversion as conversion
 import DataExtraction.extractdata as extractdata
 
 
-datastore = './Dataset/Ramp/ramp3.txt'
+datastore = 'dataStorage_1710348134.657108.txt'
 
 # Extract the data
 currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore)
+
+factor = 1
 
 # Convert the data
 data_matrix, data_array = conversion.convert_data(currentmode, k_value, factor, offset, data_matrix)
@@ -40,19 +42,18 @@ std_values = std_values[1:]
 if len(timestamp) != len(mean_values) or len(timestamp) != len(std_values) or len(mean_values) != len(std_values):
     timestamp = np.arange(0, len(mean_values), 1)
 
+plt.figure(figsize=(10, 10), dpi=100)
+
 # Create the mean graphs
-plt.figure(figsize=(10, 5), dpi=100)
+plt.subplot(2, 1, 1)
 plt.plot(timestamp, mean_values)
 plt.title('Mean value over time')
 plt.xlabel('Time (s)')
 plt.ylabel('Mean value')
 plt.grid()
 
-
-#Create the standard deviation graph with error bands
-plt.figure(figsize=(10, 5), dpi=100)
-
-#plt.subplot(2, 1, 2)
+# Create the standard deviation graph with error bands
+plt.subplot(2, 1, 2)
 plt.plot(timestamp, std_values)
 plt.fill_between(timestamp,
                  std_values - stats.t.ppf(0.975, df=data_rate - 1) * std_values / np.sqrt(data_rate),
