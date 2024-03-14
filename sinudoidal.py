@@ -9,12 +9,12 @@ import DataExtraction.extractdata as extractdata
 import DataExtraction.extractperiod as extractperiod
 
 
-datastore = './Dataset//Sinusoidal wave/sinusoidalwave.txt'
+datastore = './Dataset/SinusoidalWave/sinusoidal7.ds32'
 
 # Create a sinusoidal wave from 0 to 4, 200hz
-amplitude = 1.775
-offset_sin = 1.775
-period = 10
+amplitude = 2
+offset_sin = 2
+period = 2.15
 
 # Extract the data
 currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore)

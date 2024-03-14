@@ -7,7 +7,7 @@ import scipy.stats as stats
 import Conversion.conversion as conversion
 import DataExtraction.extractdata as extractdata
 
-datastore = './Dataset/Noise/shortingnoise.txt'
+datastore = './Dataset/Noise/shortingnoise.ds32'
 
 # Extract the data
 currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore)
@@ -21,19 +21,35 @@ data_matrix, data_array = conversion.convert_data(currentmode, k_value, factor, 
 # Calculate the FFT of the data
 fft_result = np.fft.fft(data_array)
 
-fft_result[0] = 1
-
 # Calculate the amplitude of the FFT in decibels
 fft_amplitude = 20 * np.log10(np.abs(fft_result))
 
 # Create the frequency array
 freqs = np.fft.fftfreq(data_array.size, 1/data_rate)
 
-# Plot the FFT showing only the positive frequencies
-fig, ax = plt.subplots()
-ax.plot(freqs[:data_array.size//2], fft_amplitude[:data_array.size//2])
+# Remove the fundamental frequency from the frequency array
+fft_amplitude[0] = 0
+fft_result[0] = 0
 
-# Extract the maximum frequency and amplitude
+# Create a figure with two subplots
+fig, (ax1, ax2) = plt.subplots(2, 1)
+
+# Plot the FFT amplitude in the top subplot
+ax1.plot(freqs[:data_array.size//2], fft_amplitude[:data_array.size//2])
+ax1.set_ylabel('Amplitude (dB)')
+
+# Plot the FFT result in the bottom subplot
+ax2.plot(freqs[:data_array.size//2], np.abs(fft_result)[:data_array.size//2])
+ax2.set_xlabel('Frequency (Hz)')
+ax2.set_ylabel('Amplitude')
+
+# Adjust the spacing between subplots
+plt.subplots_adjust(hspace=0.4)
+
+# Show the plot
+plt.show()
+
+'''# Extract the maximum frequency and amplitude
 max_amplitude = np.max(fft_amplitude)
 
 # Extract the frequency at the maximum amplitude
@@ -70,6 +86,6 @@ ax.text(0.05, 0.85, noise_power_text, transform=ax.transAxes, fontsize=10, verti
 ax.text(0.05, 0.80, max_amplitude_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
 ax.text(0.05, 0.75, max_freq_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
 ax.text(0.05, 0.70, snr_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
-ax.text(0.05, 0.65, sinad_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
+ax.text(0.05, 0.65, sinad_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')'''
 
 plt.show()
