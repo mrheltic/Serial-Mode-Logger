@@ -74,6 +74,11 @@ except KeyboardInterrupt:
 finally:
     ser.close()  # Close the serial connection
 
+    #remove the first 4 rows of data_matrix
+    data_matrix = data_matrix[4:]
+    #remove the first 4 rows of time_array
+    time_array = time_array[4:]
+
     # Print the current mode and data rate
     utils = "Current measure: " + str(current_mode) + "\n" + "Gain: " + str(k_value) + "\n" + "Offset: " + str(
         offset) + "\n" + "Array length (Sample rate): " + str(data_rate) + "\n" + "factor: " + str(
