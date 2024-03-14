@@ -1,52 +1,77 @@
-rampFSR
-    Period 5Hz
-    FSR 4V (2vpp - 2 off)
-    Factor 1
-
-rampFSRexternal
-    Period 5Hz
-    FSR 4V (2vpp - 2 off)
-    ADC connected to ext dc
-    Factor 1
-
-external1
-    Period 5kHz (DC)
-    FSR 4V (2vpp - 2 off)
-    Factor 1
-    DC gen to 4.5
-
-external2
-    Period 5kHz (DC)
-    FSR 4V (2vpp - 2 off)
-    Factor 1
-    DC gen to 5
-
-external3
-    Period 5kHz (DC)
-    FSR 4V (2vpp - 2 off)
-    Factor 1
-    DC gen to 5.2
-
-external4
-    Period 5kHz (DC)
-    FSR 4V (2vpp - 2 off)
-    Factor 1
-    DC gen to 5.5
-
 sinusoidal1
-    Period 50
-    FSR 3.55V (2vpp - 2 off)
+    Period 8.6 Hz
+    FSR 4 (2vpp - 2 off)
     Factor 1
     DC gen to 5.5
 
 sinusoidal2
-    Period 50
-    FSR 3.55V (2vpp - 2 off)
+    Period 50 Hz
+    FSR 4 (2vpp - 2 off)
     Factor 1
     DC gen to 5.5
 
 sinusoidal3
-    Period 50
-    FSR 3.55V (2vpp - 2 off)
+    Period 86 Hz
+    FSR 4 (2vpp - 2 off)
     Factor 1
     DC gen to 5.5
+
+sinusoidal4
+    Period 215 Hz
+    FSR 4 (2vpp - 2 off)
+    Factor 1
+    DC gen to 5.5
+
+sinusoidal5
+    Period 430 Hz
+    FSR 4 (2vpp - 2 off)
+    Factor 1
+    DC gen to 5.5
+
+sinusoidal6
+    Period 860 Hz
+    FSR 4 (2vpp - 2 off)
+    Factor 1
+    DC gen to 5.5
+
+sinusoidal7
+    Period 2.15 Hz up to 3 mins
+    FSR 4 (2vpp - 2 off)
+    Factor 1
+    DC gen to 5.5
+
+sinusoidal8
+    Period 8600 Hz
+    FSR 4 (2vpp - 2 off)
+    Factor 1
+    DC gen to 5.5
+
+sinusoidal9
+    Period 2150 Hz
+    FSR 4 (2vpp - 2 off)
+    Factor 1
+    DC gen to 5.5
+
+shortingnoise
+    FSR 4 (2vpp - 2 off)
+    Factor 1
+    DC gen to 5.5
+
+ramp1
+    Period 5 Hz
+    FSR 4 (2vpp - 2 off)
+    Factor 1
+    DC gen to 5.5
+
+ramp2
+    Period 5 Hz
+    (3.90vpp - 1.95 off)
+    Factor 1
+    DC gen to 5.5
+    
+For calibration:
+    0.8 (0.8032) -> 6400 (6425.6)
+    1.63 (1.6350) -> 13040 (13080)
+    2.45 (2.4573) -> 19600 (19658.4)
+    3.27 (3.2793) -> 26160 (26234.4)
+    3.55 (3.5601) -> 28400 (28480.15)

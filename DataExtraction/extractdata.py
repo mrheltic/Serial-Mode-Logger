@@ -2,7 +2,7 @@ import numpy as np
 
 def extract_data(datastore):
     # number of array to skip in the dataset
-    number_of_rows_to_skip = 1
+    number_of_rows_to_skip =4
 
     # export the current mode
     current_mode = np.loadtxt(datastore, dtype='str', max_rows=1)[-1]

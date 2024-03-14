@@ -60,7 +60,7 @@ try:
                 if len(data_array) == data_rate:  # If the array has reached the desired length
                     data_matrix.append(data_array)  # Add the array to the matrix
                     data_array = []  # Reset the array
-                    time_array.append(str(ser.readline().decode('utf-8').strip()))
+                    time_array.append(time.strftime("%H:%M:%S"))
                     current_time = time.time()
                     evaluation_time.append(current_time - start_time)
                     start_time = current_time
@@ -84,7 +84,6 @@ finally:
 
     #cast data_matrix to str
     data_matrix = np.array(data_matrix).astype(str)
-    time_array = np.array(time_array).astype(str)
 
     # Merging the time array with the data matrix (time array as first column)
     saving_matrix = np.column_stack((time_array, data_matrix))

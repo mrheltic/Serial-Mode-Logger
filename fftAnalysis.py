@@ -7,7 +7,7 @@ import scipy.stats as stats
 import Conversion.conversion as conversion
 import DataExtraction.extractdata as extractdata
 
-datastore = './Dataset/Ramp/constant.ds32'
+datastore = './Dataset/SinusoidalWave/sinusoidal9.ds32'
 
 # Extract the data
 currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore)

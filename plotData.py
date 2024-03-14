@@ -6,8 +6,7 @@ import Conversion.conversion as conversion
 import DataExtraction.extractdata as extractdata
 
 
-datastore = './Dataset/Ramp/rampFSR1.ds32'
-
+datastore = './Dataset/SinusoidalWave/sinusoidal6.ds32'
 # Extract the data
 currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore)
 
@@ -25,9 +24,8 @@ for i in range(1, data_matrix.shape[0]):
     std_values[i] = np.std(data_matrix[i, :])
 
 # Plot the entire dataset
-    
 plt.figure(figsize=(10, 5), dpi=100)
-plt.plot(data_array)
+plt.plot(range(len(data_array)), data_array, 'o', markersize=2)
 plt.title('Entire dataset')
 plt.xlabel('Sample number')
 plt.ylabel('Value')

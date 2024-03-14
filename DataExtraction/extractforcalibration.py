@@ -3,6 +3,8 @@ import numpy as np
 
 def extract_for_calibration(data_folder, number_of_rows_to_skip, data_rate, number_of_seconds, amplitude, offset):
 
+    ramp_values = [0.8032, 1.6350, 2.4573, 3.2793, 3.5601]
+
     # Get a list of all files in the data folder
     file_list = os.listdir(data_folder)
 
@@ -47,5 +49,5 @@ def extract_for_calibration(data_folder, number_of_rows_to_skip, data_rate, numb
     mean_values.sort()
 
     # Create the ramp
-    ramp_values = np.linspace(offset, amplitude, len(mean_values))
+    #ramp_values = np.linspace(offset, amplitude, len(mean_values))
     return mean_values, ramp_values
