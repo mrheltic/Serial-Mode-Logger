@@ -6,7 +6,7 @@ import Conversion.conversion as conversion
 import DataExtraction.extractdata as extractdata
 
 
-datastore = './Dataset/SinusoidalWave/sinusoidal6.ds32'
+datastore = './Dataset/SinusoidalWave/sinusoidal1.ds32'
 # Extract the data
 currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore)
 
@@ -26,9 +26,9 @@ for i in range(1, data_matrix.shape[0]):
 # Plot the entire dataset
 plt.figure(figsize=(10, 5), dpi=100)
 plt.plot(range(len(data_array)), data_array, 'o', markersize=2)
-plt.title('Entire dataset')
+plt.title('Data')
 plt.xlabel('Sample number')
-plt.ylabel('Value')
+plt.ylabel('Value (V)')
 plt.grid()
 plt.show()
 
@@ -47,7 +47,7 @@ plt.subplot(2, 1, 1)
 plt.plot(timestamp, mean_values)
 plt.title('Mean value over time')
 plt.xlabel('Time (s)')
-plt.ylabel('Mean value')
+plt.ylabel('Mean value (V)')
 plt.grid()
 
 # Create the standard deviation graph with error bands
@@ -59,7 +59,7 @@ plt.fill_between(timestamp,
                  alpha=0.5)
 plt.title('STD with 95% confidence interval')
 plt.xlabel('Time (s)')
-plt.ylabel('Standard deviation')
+plt.ylabel('Standard deviation (V)')
 
 # Show the graphs
 plt.tight_layout()
