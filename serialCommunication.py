@@ -4,6 +4,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import scipy.stats as stats
+from datetime import datetime, timedelta
 
 # Initialize the matrix and array for the data
 data_matrix = []
@@ -64,6 +65,7 @@ try:
                     current_time = time.time()
                     evaluation_time.append(current_time - start_time)
                     start_time = current_time
+                    
                    
                     
                    
@@ -85,7 +87,10 @@ finally:
         factor)
 
     # Saving the last timestamp for dynamic plot
-    last_timestamp = time_array[-1]
+    last_timestamp= datetime.datetime.strptime(time_array[-1], ("%H:%M:%S"))
+    endtimeline= last_timestamp+datetime.timedelta(seconds=1)
+    endtimeline=endtimeline.strftime("%H:%M:%S")
+
 
     #cast data_matrix to str
     data_matrix = np.array(data_matrix).astype(str)
@@ -102,7 +107,7 @@ finally:
 
     # Adding the last timestamp for dynamic plot in the file
     with open(filename, "a") as file:
-        file.write(str(last_timestamp))
+        file.write(str(endtimeline))
 
     # Evaluating the mean time for each data acquisition
     mean_time = np.mean(evaluation_time)
