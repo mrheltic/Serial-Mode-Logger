@@ -15,7 +15,7 @@ import DataExtraction.extractperiod as extractperiod
 
 datastore = './Dataset/SinusoidalWave/sinusoidal7.ds32'
 
-# Create a sinusoidal wave from 0 to 4, 200hz
+# Set the amplitude, offset and period
 amplitude = 2
 offset_sin = 2
 period = 2.15

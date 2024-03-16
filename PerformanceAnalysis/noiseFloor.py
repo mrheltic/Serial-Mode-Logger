@@ -9,7 +9,7 @@ sys.path.insert(0, './')
 import Conversion.conversion as conversion
 import DataExtraction.extractdata as extractdata
 
-datastore = './Dataset/Noise/shortingnoise.ds32'
+datastore = './Dataset/Noise/floatingnoise.ds32'
 
 # Extract the data
 currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore)
@@ -51,7 +51,7 @@ plt.subplots_adjust(hspace=0.4)
 # Show the plot
 plt.show()
 
-'''# Extract the maximum frequency and amplitude
+# Extract the maximum frequency and amplitude
 max_amplitude = np.max(fft_amplitude)
 
 # Extract the frequency at the maximum amplitude
@@ -73,7 +73,7 @@ snr2 = 20 * np.log10(signal_power / noise_power)
 # Calculate the SINAD of the signal
 sinad = 1.76 + (6.02 * enob)
 
-# Add text annotations for ENOB, signal power, and other information
+'''# Add text annotations for ENOB, signal power, and other information
 enob_text = f'ENOB: {enob:.2f} bits'
 signal_power_text = f'Signal Power: {signal_power:.2f}'
 noise_power_text = f'Noise Power: {noise_power:.2f}'
@@ -89,5 +89,11 @@ ax.text(0.05, 0.80, max_amplitude_text, transform=ax.transAxes, fontsize=10, ver
 ax.text(0.05, 0.75, max_freq_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
 ax.text(0.05, 0.70, snr_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')
 ax.text(0.05, 0.65, sinad_text, transform=ax.transAxes, fontsize=10, verticalalignment='top')'''
+
+# Print the value of the ENOB
+print(f'ENOB: {enob:.2f} bits')
+print(f'SNR: {snr:.2f} dB')
+print(f'SINAD: {sinad:.2f} dB')
+
 
 plt.show()

@@ -16,8 +16,8 @@ import DataExtraction.extractramp as extractramp
 
 datastore = './Dataset/Ramp/ramp2.ds32'
 
-# Create a ramp from 0 to 4, with 100Hz
-amplitude = 3.55
+# Set the amplitude and period
+amplitude = 3.9
 period = 5
 
 # Extract the data
@@ -41,9 +41,9 @@ slope_ramp, intercept_ramp, r_value_ramp, p_value_ramp, std_err_ramp = stats.lin
 fig, (ax1, ax2) = plt.subplots(2, 1)
 
 # Plot the linear model of the data array period and the ramp signal
-ax1.plot(data_array_period)
+#ax1.plot(data_array_period)
 ax1.plot(slope * np.arange(len(data_array_period)) + intercept)
-ax1.plot(ramp)
+#ax1.plot(ramp)
 ax1.plot(slope_ramp * np.arange(len(data_array_period)) + intercept_ramp)
 
 # Adding labels

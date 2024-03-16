@@ -2,7 +2,7 @@ import numpy as np
 
 def extract_ramp(data_array, period, data_rate, amplitude):
     # Calculate points, rounding up to the nearest integer to ensure the period is covered
-    points = int(np.ceil(data_rate/period))
+    points = int(np.ceil(data_rate/period))-1
 
     # Build the periodical ramp signal
     ramp = np.linspace(0, amplitude, points)

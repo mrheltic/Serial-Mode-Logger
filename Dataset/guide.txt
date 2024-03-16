@@ -58,7 +58,7 @@ shortingnoise
     DC gen to 5.5
 
 ramp1
-    Period 5 Hz
+    Period 4 Hz
     FSR 4 (2vpp - 2 off)
     Factor 1
     DC gen to 5.5

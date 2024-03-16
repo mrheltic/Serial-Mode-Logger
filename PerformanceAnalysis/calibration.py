@@ -15,7 +15,7 @@ import DataExtraction.extractforcalibration as extractforcalibration
 
 data_rate = 860
 number_of_rows_to_skip = 1
-number_of_seconds = 10
+number_of_seconds = 30
 
 # Setting the parameters for the calibration
 amplitude = 3.55
