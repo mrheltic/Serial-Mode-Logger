@@ -5,34 +5,17 @@ import scipy.stats as stats
 from collections import deque 
 from matplotlib.animation import FuncAnimation 
 import Conversion.animatedConversion as animatedConversion
+import Conversion.conversion as conversion
+import DataExtraction.extractdata as extractdata
 
 datastore = './Dataset/Ramp/temp/ramp3.ds32'
 #number of array to skip in the dataset
-number_of_rows_to_skip = 1
 
-#export the current mode
-currentmode=np.loadtxt(datastore, dtype='str', max_rows=1)[-1]
+# Extract the data
+currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore)
 
-#export the k value
-k_value=float(np.loadtxt(datastore, dtype='float', usecols=(1), skiprows=1,max_rows=1))
-
-#export the offset
-offset=np.loadtxt(datastore, dtype='float', usecols=(1), skiprows=2, max_rows=1) 
-
-#export the data rate
-data_rate=int(np.loadtxt(datastore, dtype='int', usecols=(4), skiprows=3, max_rows=1))
-
-#export the conversion factor
-factor=np.loadtxt(datastore, dtype='float', usecols=(1), skiprows=4, max_rows=1) 
-
-# Set the factor to 1 if you're using the FSR of ADC
-#factor=1
-
-#export the timestamp
-timestamp = np.loadtxt(datastore, dtype='str', usecols=(0), skiprows=5+number_of_rows_to_skip) 
-
-#export the dataset(reversed) without the 1st array for a problem
-data_matrix = np.loadtxt(datastore, dtype='int', skiprows=5+number_of_rows_to_skip, usecols=np.arange(1, data_rate+1),max_rows=len(timestamp)-1)
+# Set the conversion factor to 1 if you're using the FSR of ADC
+#factor = 1
 
 #create a 1D array from the matrix
 data_array = np.concatenate(data_matrix) # It could be changed to .reshape
