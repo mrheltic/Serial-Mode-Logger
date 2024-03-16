@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 
 import sys
 sys.path.insert(0, './')
+
 import Conversion.conversion as conversion
 import DataExtraction.extractdata as extractdata
 import DataExtraction.extractperiod as extractperiod
