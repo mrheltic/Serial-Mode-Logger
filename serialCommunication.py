@@ -93,9 +93,6 @@ finally:
     # Merging the time array with the data matrix (time array as first column)
     saving_matrix = np.column_stack((time_array, data_matrix))
 
-    #add a first row into saving_matrix with utils
-    #saving_matrix = np.vstack((utils, saving_matrix))
-
     # Create the filename with the current date and time
     filename = "dataStorage_" + time.strftime("%Y-%m-%d_%H-%M-%S") + ".ds32"
 

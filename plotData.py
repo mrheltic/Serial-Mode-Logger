@@ -6,7 +6,7 @@ import Conversion.conversion as conversion
 import DataExtraction.extractdata as extractdata
 
 
-datastore = './Dataset/Ramp/ramp3.ds32'
+datastore = './Dataset/Ramp/temp/ramp3.ds32'
 # Extract the data
 currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore)
 

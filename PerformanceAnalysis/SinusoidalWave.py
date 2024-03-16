@@ -4,6 +4,9 @@ import scipy.stats as stats
 import pylab as plt
 import scipy.optimize
 from datetime import datetime, timedelta
+
+import sys
+sys.path.insert(0, './')
 import Conversion.conversion as conversion
 import DataExtraction.extractdata as extractdata
 import DataExtraction.extractperiod as extractperiod
@@ -65,8 +68,8 @@ res2=fit_sin(tt, sinusoidal)
 fig, (ax1, ax2) = plt.subplots(2, 1)
 
 # Plot the linear model of the data array period and the ramp signal
-ax1.plot(res2["fitfunc"](tt), "b-", label="y true curve", linewidth=2, color='blue', linestyle='dashed')
-ax1.plot(res['fitfunc'](tt), "g-", label="y fit curve", linewidth=2,color='red')
+ax1.plot(res2["fitfunc"](tt), label="y true curve", linewidth=2, color='blue', linestyle='dashed')
+ax1.plot(res['fitfunc'](tt), label="y fit curve", linewidth=2,color='red')
 
 
 # Adding labels
@@ -85,7 +88,7 @@ ax2.set_xlabel('Sample number')
 ax2.set_ylabel('Error')
 
 # Adding title
-ax2.set_title(' Error between data array period and ramp signal')
+ax2.set_title(' Error between data array period and sinusoidal signal')
 
 
 plt.tight_layout()

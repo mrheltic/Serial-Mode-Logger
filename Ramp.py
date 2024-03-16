@@ -12,7 +12,7 @@ import DataExtraction.extractramp as extractramp
 # Ramp 2: 3.65V, 100Hz
 # Ramp 3: 3.55V, 100Hz
 
-datastore = './Dataset/Ramp/rampFSR.txt'
+datastore = './Dataset/Ramp/ramp2.ds32'
 
 # Create a ramp from 0 to 4, with 100Hz
 amplitude = 3.55
@@ -29,10 +29,10 @@ data_matrix, data_array = conversion.convert_data(currentmode, k_value, factor, 
 
 data_array_period, ramp, points = extractramp.extract_ramp(data_array, period, data_rate, amplitude)
 
-# Fit a lineer model to the data array period
+# Fit a linear model to the data array period
 slope, intercept, r_value, p_value, std_err = stats.linregress(np.arange(points), data_array_period)
 
-# Fit a lineer model to the ramp signal
+# Fit a linear model to the ramp signal
 slope_ramp, intercept_ramp, r_value_ramp, p_value_ramp, std_err_ramp = stats.linregress(np.arange(points), ramp)
 
 # Plot one iteration of data array period and compare it to the generated ramp signal, until the period is found

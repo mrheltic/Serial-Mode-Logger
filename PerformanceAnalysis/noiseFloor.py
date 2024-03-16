@@ -4,6 +4,8 @@ from collections import deque
 from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
 import scipy.stats as stats
+import sys
+sys.path.insert(0, './')
 import Conversion.conversion as conversion
 import DataExtraction.extractdata as extractdata
 

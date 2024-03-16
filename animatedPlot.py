@@ -6,7 +6,7 @@ from collections import deque
 from matplotlib.animation import FuncAnimation 
 import Conversion.animatedConversion as animatedConversion
 
-datastore = './Dataset/Ramp/rampFSR3.txt'
+datastore = './Dataset/Ramp/temp/ramp3.ds32'
 #number of array to skip in the dataset
 number_of_rows_to_skip = 1
 
@@ -26,7 +26,7 @@ data_rate=int(np.loadtxt(datastore, dtype='int', usecols=(4), skiprows=3, max_ro
 factor=np.loadtxt(datastore, dtype='float', usecols=(1), skiprows=4, max_rows=1) 
 
 # Set the factor to 1 if you're using the FSR of ADC
-factor=1
+#factor=1
 
 #export the timestamp
 timestamp = np.loadtxt(datastore, dtype='str', usecols=(0), skiprows=5+number_of_rows_to_skip) 
@@ -126,51 +126,5 @@ for i in range(1, len(timestamp)):
 #line.set_data([], [])          #clear  
 
 #show the plot
-plt.show() 
-
-
-# Create the mean graphs
-plt.figure(figsize=(10, 5), dpi=100)
-plt.plot(timestamp[:(len(timestamp)-1)], mean_values)
-plt.title('Mean value over time')
-plt.xlabel('Time (s)')
-plt.ylabel('Mean value')
-
-
-#Create the standard deviation graph with error bands
-plt.figure(figsize=(10, 5), dpi=100)
-
-#plt.subplot(2, 1, 2)
-plt.plot(timestamp[:(len(timestamp)-1)], std_values)
-
-plt.fill_between(timestamp[:(len(timestamp)-1)],
-                 std_values - stats.t.ppf(0.975, df=data_rate - 1) * std_values / np.sqrt(data_rate),
-                 std_values + stats.t.ppf(0.975, df=data_rate - 1) * std_values / np.sqrt(data_rate), color='gray',
-                 alpha=0.5)
-plt.title('STD with 95% confidence interval')
-plt.xlabel('Time (s)')
-plt.ylabel('Standard deviation')
-
-# Show the graphs
-plt.tight_layout()
-plt.grid()
-plt.show()
-
-
-# Calculate the FFT of the data
-fft_result = np.fft.fft(data_array)
-
-# Calculate the amplitude of the FFT in decibels
-fft_amplitude = 20 * np.log10(np.abs(fft_result))
-
-# Create the frequency array
-freqs = np.fft.fftfreq(data_array.size, 1/data_rate)
-
-# Plot the FFT
-plt.figure(figsize=(4, 3), dpi=150)
-plt.plot(freqs, fft_amplitude)
-plt.title('FFT of the data')
-plt.xlabel('Frequency (Hz)')
-plt.ylabel('Amplitude')
-plt.grid()
-plt.show()
+plt.show(block=False)
+plt.close('all')
