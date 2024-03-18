@@ -4,7 +4,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import scipy.stats as stats
-#pimport datetime
+#from datetime import datetime, timedelta
 
 # Initialize the matrix and array for the data
 data_matrix = []
@@ -112,7 +112,7 @@ finally:
 
     # Adding the last timestamp for dynamic plot in the file
     with open(filename, "a") as file:
-        file.write(str(endtimeline))
+        file.write(str('endtimeline'))
 
     # Evaluating the mean time for each data acquisition
     mean_time = np.mean(evaluation_time)
