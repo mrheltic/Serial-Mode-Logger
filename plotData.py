@@ -10,7 +10,7 @@ datastore = './Dataset/SinusoidalWave/sinusoidal9.ds32'
 currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore)
 
 # Set the conversion factor to 1 if you're using the FSR of ADC
-factor = 1
+#factor = 1
 
 # Convert the data
 data_matrix, data_array = conversion.convert_data(currentmode, k_value, factor, offset, data_matrix)
