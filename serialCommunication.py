@@ -4,7 +4,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import scipy.stats as stats
-from datetime import datetime, timedelta
+#pimport datetime
 
 # Initialize the matrix and array for the data
 data_matrix = []
@@ -63,6 +63,7 @@ try:
                     data_array = []  # Reset the array
                     time_array.append(time.strftime("%H:%M:%S"))
                     current_time = time.time()
+                    end=current_time
                     evaluation_time.append(current_time - start_time)
                     start_time = current_time
                     
@@ -74,22 +75,26 @@ except KeyboardInterrupt:
     print("Data acquisition stopped by the user")
 
 finally:
+    
     ser.close()  # Close the serial connection
-
+    endtimeline=time.strftime("%H:%M:%S")
+    
     #remove the first 4 rows of data_matrix
-    data_matrix = data_matrix[4:]
+    data_matrix = data_matrix[2:]
     #remove the first 4 rows of time_array
-    time_array = time_array[4:]
+    time_array = time_array[2:]
 
     # Print the current mode and data rate
     utils = "Current measure: " + str(current_mode) + "\n" + "Gain: " + str(k_value) + "\n" + "Offset: " + str(
         offset) + "\n" + "Array length (Sample rate): " + str(data_rate) + "\n" + "factor: " + str(
         factor)
-
+    '''
     # Saving the last timestamp for dynamic plot
-    last_timestamp= datetime.datetime.strptime(time_array[-1], ("%H:%M:%S"))
-    endtimeline= last_timestamp+datetime.timedelta(seconds=1)
-    endtimeline=endtimeline.strftime("%H:%M:%S")
+    last_timestamp=time.strftime(time_array[-1],"%H:%M:%S")
+    end=time.struct_time(last_timestamp[:6]+(last_timestamp.tm_sec+1,))
+    endtimeline=time.strftime(end,"%H:%M:%S")'''
+    
+    
 
 
     #cast data_matrix to str
