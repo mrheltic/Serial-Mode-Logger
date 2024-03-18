@@ -77,7 +77,8 @@ except KeyboardInterrupt:
 finally:
     
     ser.close()  # Close the serial connection
-    endtimeline=time.strftime("%H:%M:%S")
+    time.sleep(0.7)
+    end=time.strftime("%H:%M:%S")
     
     #remove the first 4 rows of data_matrix
     data_matrix = data_matrix[2:]
@@ -100,6 +101,7 @@ finally:
     #cast data_matrix to str
     data_matrix = np.array(data_matrix).astype(str)
 
+
     # Merging the time array with the data matrix (time array as first column)
     saving_matrix = np.column_stack((time_array, data_matrix))
 
@@ -112,7 +114,7 @@ finally:
 
     # Adding the last timestamp for dynamic plot in the file
     with open(filename, "a") as file:
-        file.write(str('endtimeline'))
+        file.write(str(end))
 
     # Evaluating the mean time for each data acquisition
     mean_time = np.mean(evaluation_time)
