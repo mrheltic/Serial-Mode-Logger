@@ -5,12 +5,12 @@ import Conversion.conversion as conversion
 import DataExtraction.extractdata as extractdata
 
 
-datastore = './Dataset/Ramp/temp/ramp2.ds32'
+datastore = './Dataset/SinusoidalWave/sinusoidal9.ds32'
 # Extract the data
 currentmode, k_value, offset, data_rate, factor, timestamp, data_matrix = extractdata.extract_data(datastore)
 
 # Set the conversion factor to 1 if you're using the FSR of ADC
-#factor = 1
+factor = 1
 
 # Convert the data
 data_matrix, data_array = conversion.convert_data(currentmode, k_value, factor, offset, data_matrix)
@@ -49,7 +49,7 @@ plt.figure(figsize=(10, 10), dpi=100)
 plt.subplot(2, 1, 1)
 
 plt.plot(timestamp, mean_values)
-plt.xticks([0,len(timestamp)/2,len(timestamp)-1])
+plt.xticks([min(timestamp),max(timestamp)])
 plt.title('Mean value over time')
 plt.xlabel('Time (s)')
 plt.ylabel('Mean value (V)')
@@ -62,7 +62,7 @@ plt.fill_between(timestamp,
                  std_values - stats.t.ppf(0.975, df=data_rate - 1) * std_values / np.sqrt(data_rate),
                  std_values + stats.t.ppf(0.975, df=data_rate - 1) * std_values / np.sqrt(data_rate), color='gray',
                  alpha=0.5)
-plt.xticks([0,len(timestamp)/2,len(timestamp)-1])
+plt.xticks([min(timestamp),max(timestamp)])
 plt.title('STD with 95% confidence interval')
 plt.xlabel('Time (s)')
 plt.ylabel('Standard deviation (V)')
