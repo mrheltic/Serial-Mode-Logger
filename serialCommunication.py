@@ -77,7 +77,7 @@ except KeyboardInterrupt:
 finally:
     
     ser.close()  # Close the serial connection
-    time.sleep(0.7)
+    time.sleep(0.6)
     end=time.strftime("%H:%M:%S")
     
     #remove the first 4 rows of data_matrix
