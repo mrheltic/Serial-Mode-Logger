@@ -4,7 +4,8 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import scipy.stats as stats
-#from datetime import datetime, timedelta
+import getLastTimestamp
+import free_serial_port_finder
 
 # Initialize the matrix and array for the data
 data_matrix = []
@@ -16,13 +17,24 @@ start_time = time.time()
 current_time = time.time()
 evaluation_time = []
 
-# Open the serial connection (replace 'COM8' with your serial port)
-ser = serial.Serial('COM14', 250000)
+
+serial_port=free_serial_port_finder.findSerialPort()
+if serial_port: 
+    print("Serial port found: ", serial_port)
+else: print("No serial port found")
+
+# Open the serial connection
+ser = serial.Serial(serial_port, 115200)
+
+if ser.isOpen():
+    print("Serial connection established")
+
 
 # Send the start command to the microcontroller
 time.sleep(1)
 ser.write(b'F')
-time.sleep(3)
+time.sleep(2)
+
 
 # Wait for the microcontroller to send current mode and data rate
 while True:
@@ -77,9 +89,7 @@ except KeyboardInterrupt:
 finally:
     
     ser.close()  # Close the serial connection
-    time.sleep(0.6)
-    end=time.strftime("%H:%M:%S")
-    
+  
     #remove the first 4 rows of data_matrix
     data_matrix = data_matrix[2:]
     #remove the first 4 rows of time_array
@@ -111,6 +121,9 @@ finally:
     # Save the data to the file
     np.savetxt(filename, saving_matrix, delimiter=' ', comments='', fmt='%s', header=utils, encoding='utf-8')
     print("\n\n\n\n\nData saved in '" + filename + "'")
+
+
+    end=getLastTimestamp(time_array[-1])
 
     # Adding the last timestamp for dynamic plot in the file
     with open(filename, "a") as file:
