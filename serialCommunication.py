@@ -4,8 +4,8 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import scipy.stats as stats
-import getLastTimestamp
-import free_serial_port_finder
+import Utils.getLastTimestamp as getLastTimestamp
+import Utils.free_serial_port_finder as free_serial_port_finder
 
 # Initialize the matrix and array for the data
 data_matrix = []
