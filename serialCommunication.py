@@ -4,7 +4,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import scipy.stats as stats
-import Utils.getLastTimestamp as getLastTimestamp
+import Utils.ArtificialTimestamp as ArtificialTimestamp
 import Utils.free_serial_port_finder as free_serial_port_finder
 
 # Initialize the matrix and array for the data
@@ -123,7 +123,7 @@ finally:
     print("\n\n\n\n\nData saved in '" + filename + "'")
 
 
-    end=getLastTimestamp(time_array[-1])
+    end=ArtificialTimestamp.getLastTimestamp(time_array[-1])
 
     # Adding the last timestamp for dynamic plot in the file
     with open(filename, "a") as file:
