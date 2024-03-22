@@ -24,7 +24,8 @@ if serial_port:
 else: print("No serial port found")
 
 
-# Open the serial connection
+# Open the serial connection and set parameters for non-blocking reading 
+# Change the serial port if it is different
 ser = serial.Serial(port=serial_port, baudrate=115200,dsrdtr=False)
 ser.setRTS(False)
 ser.setDTR(False)

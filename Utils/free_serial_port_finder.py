@@ -9,4 +9,3 @@ def findSerialPort():
         except serial.SerialException:
             pass
     return None
-ser=serial.Serial(findSerialPort(), 115200)
