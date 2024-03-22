@@ -40,11 +40,7 @@ if ser.isOpen():
 
 time.sleep(3)
 ser.write(b'F')
-
 time.sleep(2)
-
-
-
 
 
 # Wait for the microcontroller to send current mode and data rate
@@ -91,8 +87,7 @@ try:
                     start_time = current_time
                     
                    
-                    
-                   
+                               
 except KeyboardInterrupt:
     # If the user stops the program
     print("Data acquisition stopped by the user")
@@ -141,5 +136,5 @@ finally:
         file.write(str(end))
 
     # Evaluating the mean time for each data acquisition
-    mean_time = np.mean(evaluation_time)
+    mean_time = np.mean((evaluation_time[1:]))
     print("Mean time: ", mean_time)
