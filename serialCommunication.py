@@ -23,17 +23,27 @@ if serial_port:
     print("Serial port found: ", serial_port)
 else: print("No serial port found")
 
+
 # Open the serial connection
-ser = serial.Serial(serial_port, 115200)
+ser = serial.Serial(port=serial_port, baudrate=115200,dsrdtr=False)
+ser.setRTS(False)
+ser.setDTR(False)
+
+
 
 if ser.isOpen():
     print("Serial connection established")
 
 
 # Send the start command to the microcontroller
-time.sleep(1)
+
+time.sleep(3)
 ser.write(b'F')
+
 time.sleep(2)
+
+
+
 
 
 # Wait for the microcontroller to send current mode and data rate
